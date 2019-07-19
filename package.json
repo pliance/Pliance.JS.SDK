@@ -1,0 +1,32 @@
+{
+  "name": "@pliance/pliance.js.sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "keywords": [],
+  "author": "Pliance.io",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^24.0.15",
+    "@types/node": "^12.6.2",
+    "@types/node-fetch": "^2.3.7",
+    "@types/qs": "^6.5.3",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "node-fetch": "^2.6.0",
+    "qs": "^6.7.0"
+  }
+}
