@@ -65,7 +65,7 @@ class PlianceClient implements IPlianceClient {
         try {
             
             var euoe = qs.stringify(query);
-            console.log(euoe);
+            // console.log(euoe);
             let response = await this.execute<PersonSearchQueryResult>(`PersonQuery/Search?=${euoe}`, 'get');
             return response;
         }
