@@ -3,7 +3,14 @@ import {default as fetch, Headers} from 'node-fetch';
 import { Agent } from "https";
 import * as qs from 'qs';
 
-import {RegisterPersonResponse, ViewPersonQueryResult, Person, PersonSearchQuery, PersonSearchQueryResult} from './contracts'
+import {Person, RegisterPersonResponse, 
+    ViewPersonQueryResult, PersonSearchQuery, PersonSearchQueryResult, ClassifyHitCommand, ClassifyHitResponse, ArchivePersonResponse, ArchivePersonCommand, DeletePersonCommand, DeletePersonResponse, 
+    RegisterCompanyCommand, RegisterCompanyResponse,
+    ViewCompanyQuery, ViewCompanyQueryResult,
+    CompanySearchQuery, CompanySearchQueryResult,
+    ArchiveCompanyCommand, ArchiveCompanyResponse,
+    DeleteCompanyCommand, DeleteCompanyResponse
+} from './contracts'
 
 export class ClientFactory {
     constructor(private secret: string, private issuer: string, private url: string, private agent?: Agent) {
@@ -29,7 +36,6 @@ export class ClientFactory {
 }
 
 class PlianceClient implements IPlianceClient {
-
     constructor(private clientFactory: ClientFactory, private givenName: string, private subject: string) {
     }
 
@@ -39,7 +45,7 @@ class PlianceClient implements IPlianceClient {
         return response;
     }
 
-    public async Register(person: Person): Promise<RegisterPersonResponse> {
+    public async RegisterPerson(person: Person): Promise<RegisterPersonResponse> {
         try {
             let response = await this.execute<RegisterPersonResponse>('PersonCommand', 'put', person);
             return response;
@@ -63,10 +69,52 @@ class PlianceClient implements IPlianceClient {
 
     public async SearchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult> {
         try {
-            
             var euoe = qs.stringify(query);
-            // console.log(euoe);
-            let response = await this.execute<PersonSearchQueryResult>(`PersonQuery/Search?=${euoe}`, 'get');
+            let response = await this.execute<PersonSearchQueryResult>(`PersonQuery/Search?${euoe}`, 'get');
+            return response;
+        }
+        catch(e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async ClassifyPersonHit(classifyPersonHit: ClassifyHitCommand): Promise<ClassifyHitResponse> {
+        try {
+            let response = await this.execute<ClassifyHitResponse>(`PersonCommand/Classify`, 'post', classifyPersonHit);
+            return response;
+        }
+        catch(e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async ArchivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse> {
+        try {
+            let response = await this.execute<ClassifyHitResponse>(`PersonCommand/archive`, 'post', command);
+            return response;
+        }
+        catch(e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async DeletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse> {
+        try {
+            let response = await this.execute<ClassifyHitResponse>(`PersonCommand/archive`, 'post', command);
+            return response;
+        }
+        catch(e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async RegisterCompany(company: RegisterCompanyCommand): Promise<RegisterCompanyResponse> {
+        try {
+            let response = await this.execute<RegisterCompanyResponse>('companyCommand', 'put', company);
             return response;
         }
         catch(e) {
@@ -80,26 +128,78 @@ class PlianceClient implements IPlianceClient {
 
         return response;
     }
+
+    public async ViewCompany(personReferenceId: ViewCompanyQuery): Promise<ViewCompanyQueryResult> {
+        try {
+            let response = await this.execute<ViewCompanyQueryResult>(`CompanyQuery?personReferenceId=${personReferenceId}`, 'get');
+            return response;
+        }
+        catch(e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async SearchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult> {
+        try {
+            var euoe = qs.stringify(query);
+            let response = await this.execute<CompanySearchQueryResult>(`CompanyQuery/Search?${euoe}`, 'get');
+            return response;
+        }
+        catch(e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async ArchiveCompany(command: ArchiveCompanyCommand): Promise<ArchivePersonResponse> {
+        try {
+            let response = await this.execute<ArchiveCompanyResponse>(`companyCommand/archive`, 'post', command);
+            return response;
+        }
+        catch(e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async DeleteCompany(command: DeleteCompanyCommand): Promise<DeletePersonResponse> {
+        try {
+            let response = await this.execute<DeleteCompanyResponse>(`companyCommand/archive`, 'post', command);
+            return response;
+        }
+        catch(e) {
+            console.log(e);
+            throw e;
+        }
+    }
 }
 
 export interface IPlianceClient {
     ping(): Promise<string>;
-    Register(person: Person): Promise<RegisterPersonResponse>;
+    RegisterPerson(person: Person): Promise<RegisterPersonResponse>;
     ViewPerson(personReferenceId: string): Promise<ViewPersonQueryResult>;
     SearchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult>;
-
+    ClassifyPersonHit(classifyPersonHit: ClassifyHitCommand): Promise<ClassifyHitResponse>;
+    ArchivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse>;
+    DeletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse>;
+    RegisterCompany(company: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
+    ViewCompany(query: ViewCompanyQuery): Promise<ViewCompanyQueryResult>;
+    SearchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult>;
+    ArchiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse>;
+    DeleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
 }
 
 class JWTFactory {
 
-    public generateJWT(secret: string, issuer: string, givenName: string, subject: string) {
+    public generateJWT(secret: string, issuer: string, givenName: string, subject: string): string {
         let header = {
           "typ": "JWT",
           "alg": "HS256"
-        }
+        };
       
-        let time_now = Math.floor(new Date().getTime() / 1000)
-        let exp = time_now + 300
+        let time_now = Math.floor(new Date().getTime() / 1000);
+        let exp = time_now + 300;
       
         let body = {
           "iat": time_now,
@@ -109,19 +209,19 @@ class JWTFactory {
           "iss": issuer,
           "given_name": givenName,
           "sub": subject
-        }
+        };
       
-        let token = []
+        let token = [];
       
-        token[0] = this.base64url(JSON.stringify(header))
-        token[1] = this.base64url(JSON.stringify(body))
-        token[2] = this.genTokenSign(token, secret)
+        token[0] = this.base64url(JSON.stringify(header));
+        token[1] = this.base64url(JSON.stringify(body));
+        token[2] = this.genTokenSign(token, secret);
         return token.join(".");
       }
       
       genTokenSign(token: string[], secret: string) {
         if (token.length != 2) {
-          return
+          return;
         }
         let hmac = crypto.createHmac('sha256', secret);
         hmac.update(token.join("."));
@@ -130,13 +230,13 @@ class JWTFactory {
         return this.urlConvertBase64(base64Hash);
       }
 
-      base64url (input: string) : string {
+      base64url (input: string): string {
         let base64String = this.btoa(input);
 
         return this.urlConvertBase64(base64String);
     }
 
-    btoa(str: string) : string {
+    btoa(str: string): string {
         let buffer = Buffer.from(str, 'binary');
     
         return buffer.toString('base64');
