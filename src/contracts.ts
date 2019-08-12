@@ -14,10 +14,9 @@ export enum Status {
 
 // Person
 
-
 // Register Person
 
-export interface  Person {
+export interface  RegisterPersonCommand {
     identity?: PersonIdentity;
     firstName: string;
     lastName: string;
@@ -189,10 +188,6 @@ export interface RegisterCompanyResponse extends Response {
 }
 
 // View Company
-
-export interface ViewCompanyQuery {
-    companyReferenceId: string;
-}
 
 export interface ViewCompanyResponseData {
     companyReferenceId: string;

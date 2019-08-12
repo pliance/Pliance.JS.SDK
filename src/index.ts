@@ -3,10 +3,10 @@ import {default as fetch, Headers} from 'node-fetch';
 import { Agent } from "https";
 import * as qs from 'qs';
 
-import {Person, RegisterPersonResponse, 
+import {RegisterPersonCommand, RegisterPersonResponse, 
     ViewPersonQueryResult, PersonSearchQuery, PersonSearchQueryResult, ClassifyHitCommand, ClassifyHitResponse, ArchivePersonResponse, ArchivePersonCommand, DeletePersonCommand, DeletePersonResponse, 
     RegisterCompanyCommand, RegisterCompanyResponse,
-    ViewCompanyQuery, ViewCompanyQueryResult,
+    ViewCompanyQueryResult,
     CompanySearchQuery, CompanySearchQueryResult,
     ArchiveCompanyCommand, ArchiveCompanyResponse,
     DeleteCompanyCommand, DeleteCompanyResponse
@@ -45,7 +45,7 @@ class PlianceClient implements IPlianceClient {
         return response;
     }
 
-    public async RegisterPerson(person: Person): Promise<RegisterPersonResponse> {
+    public async RegisterPerson(person: RegisterPersonCommand): Promise<RegisterPersonResponse> {
         try {
             let response = await this.execute<RegisterPersonResponse>('PersonCommand', 'put', person);
             return response;
@@ -129,9 +129,9 @@ class PlianceClient implements IPlianceClient {
         return response;
     }
 
-    public async ViewCompany(personReferenceId: ViewCompanyQuery): Promise<ViewCompanyQueryResult> {
+    public async ViewCompany(companyReferenceId: string): Promise<ViewCompanyQueryResult> {
         try {
-            let response = await this.execute<ViewCompanyQueryResult>(`CompanyQuery?personReferenceId=${personReferenceId}`, 'get');
+            let response = await this.execute<ViewCompanyQueryResult>(`CompanyQuery?personReferenceId=${companyReferenceId}`, 'get');
             return response;
         }
         catch(e) {
@@ -177,21 +177,20 @@ class PlianceClient implements IPlianceClient {
 
 export interface IPlianceClient {
     ping(): Promise<string>;
-    RegisterPerson(person: Person): Promise<RegisterPersonResponse>;
+    RegisterPerson(person: RegisterPersonCommand): Promise<RegisterPersonResponse>;
     ViewPerson(personReferenceId: string): Promise<ViewPersonQueryResult>;
     SearchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult>;
     ClassifyPersonHit(classifyPersonHit: ClassifyHitCommand): Promise<ClassifyHitResponse>;
     ArchivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse>;
     DeletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse>;
     RegisterCompany(company: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
-    ViewCompany(query: ViewCompanyQuery): Promise<ViewCompanyQueryResult>;
+    ViewCompany(companyReferenceId: string): Promise<ViewCompanyQueryResult>;
     SearchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult>;
     ArchiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse>;
     DeleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
 }
 
 class JWTFactory {
-
     public generateJWT(secret: string, issuer: string, givenName: string, subject: string): string {
         let header = {
           "typ": "JWT",
@@ -219,10 +218,11 @@ class JWTFactory {
         return token.join(".");
       }
       
-      genTokenSign(token: string[], secret: string) {
+      genTokenSign(token: string[], secret: string): string {
         if (token.length != 2) {
-          return;
+            throw new Error('missing token');
         }
+
         let hmac = crypto.createHmac('sha256', secret);
         hmac.update(token.join("."));
         let base64Hash = hmac.digest('base64')

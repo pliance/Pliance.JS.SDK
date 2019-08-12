@@ -1,6 +1,6 @@
 import { ClientFactory } from '../index';
-import { Person, Status, PersonSearchQuery, ClassifyHitCommand, ClassificationType, ArchivePersonCommand, DeletePersonCommand, RegisterCompanyCommand,
-    ViewCompanyQuery, CompanySearchQuery, ArchiveCompanyCommand, DeleteCompanyCommand} from '../contracts';
+import { RegisterPersonCommand, Status, PersonSearchQuery, ClassifyHitCommand, ClassificationType, ArchivePersonCommand, DeletePersonCommand, RegisterCompanyCommand,
+    CompanySearchQuery, ArchiveCompanyCommand, DeleteCompanyCommand} from '../contracts';
 import { Agent } from 'https';
 import * as fs from 'fs';
 
@@ -10,11 +10,10 @@ test('Ping', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'DEMO', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
     let res = await client.ping();
-    //console.log(res);
     expect(res).toEqual(expect.anything());
 });
 
@@ -24,29 +23,34 @@ test('Register person', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'DEMO', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let person: Person = {
+    let person: RegisterPersonCommand = {
         firstName: 'Osama',
         lastName: 'bin laden',
         personReferenceId: 'reference-id'
     };
 
     let res = await client.RegisterPerson(person);
-    //console.dir(res);
+
     expect(res.status).toEqual(Status.Success);
     expect(res.hits.length).toEqual(2);
 });
 
 test('View person', async () => {
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'TEST', 'https://test-stage3.pliance.io/');
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let res = await client.ViewPerson('customer/1');
-    //console.log(res);
+    let res = await client.ViewPerson('Pt0yPg5XlGPUDXsQDSe4ZapT_9PyXGo3bqrIVsIY6Jw');
+
     expect(res.status).toEqual(Status.Success);
     expect(res.data.hits.length).toEqual(1);
 });
@@ -57,7 +61,7 @@ test('Classify person', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'DEMO', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -69,17 +73,22 @@ test('Classify person', async () => {
     };
 
     let res = await client.ClassifyPersonHit(req);
-    //console.log(res);
+
     expect(res.status).toEqual(Status.Success);
 });
 
 test('Search person', async () => {
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'TEST', 'https://test-stage3.pliance.io/');
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
     let query: PersonSearchQuery = {
-        query: 'osama bin',
+        query: 'Ebba Busch',
         page: {
             size: 10,
             no: 1
@@ -92,36 +101,45 @@ test('Search person', async () => {
     };
 
     let res = await client.SearchPerson(query);
-    //console.log(res);
+
     expect(res.status).toEqual(Status.Success);
     expect(res.data.result.length).toEqual(1);
 });
 
 test('Archive person', async () => {
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'TEST', 'https://test-stage3.pliance.io/');
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
 
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
     let client = clientFactory.create('givenname', 'sub');
 
     let command: ArchivePersonCommand = {
-        personReferenceId: 'customer/1'
+        personReferenceId: 'reference-id'
     };
 
     let res = await client.ArchivePerson(command);
-    console.log(res);
+
     expect(res.status).toEqual(Status.Success);
 });
 
 test('Delete person', async () => {
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'TEST', 'https://test-stage3.pliance.io/');
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
     let command: DeletePersonCommand = {
-        personReferenceId: 'customer/1'
+        personReferenceId: 'reference-id'
     };
 
     let res = await client.DeletePerson(command);
-    console.log(res);
+
     expect(res.status).toEqual(Status.Success);
 });
 
@@ -145,7 +163,7 @@ test('Register company', async () => {
     };
 
     let res = await client.RegisterCompany(person);
-    //console.dir(res);
+
     expect(res.status).toEqual(Status.Success);
 });
 
@@ -154,12 +172,9 @@ test('View Company', async () => {
     let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'TEST', 'https://test-stage3.pliance.io/');
 
     let client = clientFactory.create('givenname', 'sub');
-    let req: ViewCompanyQuery = {
-        companyReferenceId: 'c'
-    };
 
-    let res = await client.ViewCompany(req);
-    //console.log(res);
+    let res = await client.ViewCompany('c');
+
     expect(res.status).toEqual(Status.Success);
     expect(res.data.beneficiaries).toEqual(1);
 });
@@ -182,7 +197,7 @@ test('Search Company', async () => {
     };
 
     let res = await client.SearchCompany(req);
-    //console.log(res);
+
     expect(res.status).toEqual(Status.Success);
     expect(res.data.result.length).toEqual(1);
 });
@@ -197,7 +212,7 @@ test('Archive company', async () => {
     };
 
     let res = await client.ArchiveCompany(command);
-    console.log(res);
+
     expect(res.status).toEqual(Status.Success);
 });
 
@@ -211,6 +226,6 @@ test('Delete company', async () => {
     };
 
     let res = await client.DeleteCompany(command);
-    console.log(res);
+
     expect(res.status).toEqual(Status.Success);
 });
