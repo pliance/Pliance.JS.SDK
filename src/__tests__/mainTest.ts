@@ -1,6 +1,6 @@
 import { ClientFactory } from '../index';
 import { RegisterPersonCommand, Status, PersonSearchQuery, ClassifyHitCommand, ClassificationType, ArchivePersonCommand, DeletePersonCommand, RegisterCompanyCommand,
-    CompanySearchQuery, ArchiveCompanyCommand, DeleteCompanyCommand} from '../contracts';
+    CompanySearchQuery, ArchiveCompanyCommand, DeleteCompanyCommand, UnarchivePersonCommand} from '../contracts';
 import { Agent } from 'https';
 import * as fs from 'fs';
 
@@ -33,10 +33,10 @@ test('Register person', async () => {
         personReferenceId: 'reference-id'
     };
 
-    let res = await client.RegisterPerson(person);
+    let res = await client.registerPerson(person);
 
     expect(res.status).toEqual(Status.Success);
-    expect(res.hits.length).toEqual(2);
+    expect(res.hits.length).toEqual(1);
 });
 
 test('View person', async () => {
@@ -49,7 +49,7 @@ test('View person', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let res = await client.ViewPerson('Pt0yPg5XlGPUDXsQDSe4ZapT_9PyXGo3bqrIVsIY6Jw');
+    let res = await client.viewPerson('Pt0yPg5XlGPUDXsQDSe4ZapT_9PyXGo3bqrIVsIY6Jw');
 
     expect(res.status).toEqual(Status.Success);
     expect(res.data.hits.length).toEqual(1);
@@ -72,7 +72,7 @@ test('Classify person', async () => {
         classification: ClassificationType.FalsePositive
     };
 
-    let res = await client.ClassifyPersonHit(req);
+    let res = await client.classifyPersonHit(req);
 
     expect(res.status).toEqual(Status.Success);
 });
@@ -100,7 +100,7 @@ test('Search person', async () => {
         }
     };
 
-    let res = await client.SearchPerson(query);
+    let res = await client.searchPerson(query);
 
     expect(res.status).toEqual(Status.Success);
     expect(res.data.result.length).toEqual(1);
@@ -119,7 +119,25 @@ test('Archive person', async () => {
         personReferenceId: 'reference-id'
     };
 
-    let res = await client.ArchivePerson(command);
+    let res = await client.archivePerson(command);
+
+    expect(res.status).toEqual(Status.Success);
+});
+
+test('Unarchive person', async () => {
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let client = clientFactory.create('givenname', 'sub');
+
+    let command: UnarchivePersonCommand = {
+        personReferenceId: 'reference-id'
+    };
+
+    let res = await client.unarchivePerson(command);
 
     expect(res.status).toEqual(Status.Success);
 });
@@ -138,7 +156,7 @@ test('Delete person', async () => {
         personReferenceId: 'reference-id'
     };
 
-    let res = await client.DeletePerson(command);
+    let res = await client.deletePerson(command);
 
     expect(res.status).toEqual(Status.Success);
 });
@@ -162,7 +180,7 @@ test('Register company', async () => {
         }
     };
 
-    let res = await client.RegisterCompany(person);
+    let res = await client.registerCompany(person);
 
     expect(res.status).toEqual(Status.Success);
 });
@@ -173,7 +191,7 @@ test('View Company', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let res = await client.ViewCompany('c');
+    let res = await client.viewCompany('c');
 
     expect(res.status).toEqual(Status.Success);
     expect(res.data.beneficiaries).toEqual(1);
@@ -196,7 +214,7 @@ test('Search Company', async () => {
         }
     };
 
-    let res = await client.SearchCompany(req);
+    let res = await client.searchCompany(req);
 
     expect(res.status).toEqual(Status.Success);
     expect(res.data.result.length).toEqual(1);
@@ -211,7 +229,7 @@ test('Archive company', async () => {
         companyReferenceId: 'customer/1'
     };
 
-    let res = await client.ArchiveCompany(command);
+    let res = await client.archiveCompany(command);
 
     expect(res.status).toEqual(Status.Success);
 });
@@ -225,7 +243,7 @@ test('Delete company', async () => {
         companyReferenceId: 'customer/1'
     };
 
-    let res = await client.DeleteCompany(command);
+    let res = await client.deleteCompany(command);
 
     expect(res.status).toEqual(Status.Success);
 });

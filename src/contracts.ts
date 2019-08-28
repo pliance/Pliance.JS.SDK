@@ -158,9 +158,17 @@ export interface ArchivePersonCommand {
     personReferenceId: string;
 }
 
+
+
 export interface ArchivePersonResponse extends Response {
 }
 
+export interface UnarchivePersonCommand {
+    personReferenceId: string;
+}
+
+export interface UnarchivePersonResponse extends Response {
+}
 
 export interface DeletePersonCommand {
     personReferenceId: string;
