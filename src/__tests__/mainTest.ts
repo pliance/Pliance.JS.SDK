@@ -1,6 +1,6 @@
 import { ClientFactory } from '../index';
 import { RegisterPersonCommand, Status, PersonSearchQuery, ClassifyHitCommand, ClassificationType, ArchivePersonCommand, DeletePersonCommand, RegisterCompanyCommand,
-    CompanySearchQuery, ArchiveCompanyCommand, DeleteCompanyCommand, UnarchivePersonCommand} from '../contracts';
+    CompanySearchQuery, ArchiveCompanyCommand, DeleteCompanyCommand, UnarchivePersonCommand, UnarchiveCompanyCommand} from '../contracts';
 import { Agent } from 'https';
 import * as fs from 'fs';
 
@@ -49,7 +49,7 @@ test('View person', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let res = await client.viewPerson('Pt0yPg5XlGPUDXsQDSe4ZapT_9PyXGo3bqrIVsIY6Jw');
+    let res = await client.viewPerson('reference-id');
 
     expect(res.status).toEqual(Status.Success);
     expect(res.data.hits.length).toEqual(1);
@@ -66,9 +66,9 @@ test('Classify person', async () => {
     let client = clientFactory.create('givenname', 'sub');
 
     let req: ClassifyHitCommand = {
-        personReferenceId: 'Pt0yPg5XlGPUDXsQDSe4ZapT_9PyXGo3bqrIVsIY6Jw',
-        matchId: 'Bogard-13935',
-        aliasId: '55601e25d6c885e8e7c549970315016196bb01c9ff22aa796d81ba5469c87a8c',
+        personReferenceId: 'reference-id',
+        matchId: 'EuSanction-833',
+        aliasId: 'a1be37af314c0cc35c5f9f4124f5f6aa0c050fbe5846e020ae17c0fe02c8c55e',
         classification: ClassificationType.FalsePositive
     };
 
@@ -88,7 +88,7 @@ test('Search person', async () => {
     let client = clientFactory.create('givenname', 'sub');
 
     let query: PersonSearchQuery = {
-        query: 'Ebba Busch',
+        query: 'Osama bin',
         page: {
             size: 10,
             no: 1
@@ -103,7 +103,7 @@ test('Search person', async () => {
     let res = await client.searchPerson(query);
 
     expect(res.status).toEqual(Status.Success);
-    expect(res.data.result.length).toEqual(1);
+    expect(res.data.result.length).toEqual(23);
 });
 
 test('Archive person', async () => {
@@ -167,13 +167,13 @@ test('Register company', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'DEMO', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
     let person: RegisterCompanyCommand = {
         name: 'Plisec',
-        companyReferenceId: 'reference-id',
+        companyReferenceId: 'comp-reference-id',
         identity: {
             identity:  '559161-4275',
             country: 'sv' 
@@ -187,22 +187,31 @@ test('Register company', async () => {
 
 
 test('View Company', async () => {
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'TEST', 'https://test-stage3.pliance.io/');
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let res = await client.viewCompany('c');
+    let res = await client.viewCompany('comp-reference-id');
 
     expect(res.status).toEqual(Status.Success);
-    expect(res.data.beneficiaries).toEqual(1);
 });
 
 test('Search Company', async () => {
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'TEST', 'https://test-stage3.pliance.io/');
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
     let req: CompanySearchQuery = {
-        query: 'osama bin',
+        query: 'Plisec',
         page: {
             size: 10,
             no: 1
@@ -217,16 +226,21 @@ test('Search Company', async () => {
     let res = await client.searchCompany(req);
 
     expect(res.status).toEqual(Status.Success);
-    expect(res.data.result.length).toEqual(1);
+    expect(res.data.result.length).toEqual(2);
 });
 
 test('Archive company', async () => {
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'TEST', 'https://test-stage3.pliance.io/');
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
     let command: ArchiveCompanyCommand = {
-        companyReferenceId: 'customer/1'
+        companyReferenceId: 'comp-reference-id'
     };
 
     let res = await client.archiveCompany(command);
@@ -234,13 +248,37 @@ test('Archive company', async () => {
     expect(res.status).toEqual(Status.Success);
 });
 
+test('Unarchive company', async () => {
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+
+    let client = clientFactory.create('givenname', 'sub');
+
+    let command: UnarchiveCompanyCommand = {
+        companyReferenceId: 'comp-reference-id'
+    };
+
+    let res = await client.unarchiveCompany(command);
+
+    expect(res.status).toEqual(Status.Success);
+});
+
 test('Delete company', async () => {
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'TEST', 'https://test-stage3.pliance.io/');
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
     let command: DeleteCompanyCommand = {
-        companyReferenceId: 'customer/1'
+        companyReferenceId: 'comp-reference-id'
     };
 
     let res = await client.deleteCompany(command);

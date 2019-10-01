@@ -12,6 +12,7 @@ import {RegisterPersonCommand, RegisterPersonResponse,
     ViewCompanyQueryResult,
     CompanySearchQuery, CompanySearchQueryResult,
     ArchiveCompanyCommand, ArchiveCompanyResponse,
+    UnarchiveCompanyCommand, UnarchiveCompanyResponse,
     DeleteCompanyCommand, DeleteCompanyResponse
 } from './contracts'
 
@@ -25,8 +26,8 @@ export class ClientFactory {
 
     public async execute<T>(endpoint: string, method: string, givenName: string, subject: string, data?: any): Promise<T> {
         let jwt = new JWTFactory();
-        var headers = new Headers()
-        headers.append('Authorization', 'Bearer ' + jwt.generateJWT(this.secret, this.issuer, givenName, subject))
+        var headers = new Headers();
+        headers.append('Authorization', 'Bearer ' + jwt.generateJWT(this.secret, this.issuer, givenName, subject));
         headers.append('Content-Type', 'application/json');
 
         let body = data != undefined ? JSON.stringify(data) : undefined;
@@ -72,8 +73,8 @@ class PlianceClient implements IPlianceClient {
 
     public async searchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult> {
         try {
-            var euoe = qs.stringify(query);
-            let response = await this.execute<PersonSearchQueryResult>(`PersonQuery/Search?${euoe}`, 'get');
+            var params = qs.stringify(query);
+            let response = await this.execute<PersonSearchQueryResult>(`PersonQuery/Search?${params}`, 'get');
             return response;
         }
         catch(e) {
@@ -117,7 +118,8 @@ class PlianceClient implements IPlianceClient {
 
     public async deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse> {
         try {
-            let response = await this.execute<ClassifyHitResponse>(`PersonCommand/archive`, 'post', command);
+            var params = qs.stringify(command);
+            let response = await this.execute<ClassifyHitResponse>(`PersonCommand?${params}`, 'delete');
             return response;
         }
         catch(e) {
@@ -145,7 +147,7 @@ class PlianceClient implements IPlianceClient {
 
     public async viewCompany(companyReferenceId: string): Promise<ViewCompanyQueryResult> {
         try {
-            let response = await this.execute<ViewCompanyQueryResult>(`CompanyQuery?personReferenceId=${companyReferenceId}`, 'get');
+            let response = await this.execute<ViewCompanyQueryResult>(`CompanyQuery?companyReferenceId=${companyReferenceId}`, 'get');
             return response;
         }
         catch(e) {
@@ -156,8 +158,8 @@ class PlianceClient implements IPlianceClient {
 
     public async searchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult> {
         try {
-            var euoe = qs.stringify(query);
-            let response = await this.execute<CompanySearchQueryResult>(`CompanyQuery/Search?${euoe}`, 'get');
+            var params = qs.stringify(query);
+            let response = await this.execute<CompanySearchQueryResult>(`CompanyQuery/Search?${params}`, 'get');
             return response;
         }
         catch(e) {
@@ -166,7 +168,7 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    public async archiveCompany(command: ArchiveCompanyCommand): Promise<ArchivePersonResponse> {
+    public async archiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse> {
         try {
             let response = await this.execute<ArchiveCompanyResponse>(`companyCommand/archive`, 'post', command);
             return response;
@@ -177,9 +179,21 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
+    public async unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse> {
+        try {
+            let response = await this.execute<UnarchiveCompanyResponse>(`companyCommand/unarchive`, 'post', command);
+            return response;
+        }
+        catch(e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
     public async deleteCompany(command: DeleteCompanyCommand): Promise<DeletePersonResponse> {
         try {
-            let response = await this.execute<DeleteCompanyResponse>(`companyCommand/archive`, 'post', command);
+            var params = qs.stringify(command);
+            let response = await this.execute<DeleteCompanyResponse>(`companyCommand?${params}`, 'delete');
             return response;
         }
         catch(e) {
@@ -202,6 +216,7 @@ export interface IPlianceClient {
     viewCompany(companyReferenceId: string): Promise<ViewCompanyQueryResult>;
     searchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult>;
     archiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse>;
+    unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse>;
     deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
 }
 

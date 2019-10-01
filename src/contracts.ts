@@ -278,6 +278,13 @@ export interface ArchiveCompanyCommand {
 export interface ArchiveCompanyResponse extends Response {
 }
 
+export interface UnarchiveCompanyCommand {
+    companyReferenceId: string;
+}
+
+export interface UnarchiveCompanyResponse extends Response {
+}
+
 export interface DeleteCompanyCommand {
     companyReferenceId: string;
 }
