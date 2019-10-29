@@ -10,7 +10,7 @@ test('Ping', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
     let res = await client.ping();
@@ -23,7 +23,7 @@ test('Register person', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -45,7 +45,7 @@ test('View person', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -61,7 +61,7 @@ test('Classify person', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -83,7 +83,7 @@ test('Search person', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -103,7 +103,7 @@ test('Search person', async () => {
     let res = await client.searchPerson(query);
 
     expect(res.status).toEqual(Status.Success);
-    expect(res.data.result.length).toEqual(23);
+    expect(res.data.result.length).toBeGreaterThan(0);
 });
 
 test('Archive person', async () => {
@@ -112,7 +112,7 @@ test('Archive person', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
     let client = clientFactory.create('givenname', 'sub');
 
     let command: ArchivePersonCommand = {
@@ -130,7 +130,7 @@ test('Unarchive person', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
     let client = clientFactory.create('givenname', 'sub');
 
     let command: UnarchivePersonCommand = {
@@ -148,7 +148,7 @@ test('Delete person', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -167,7 +167,7 @@ test('Register company', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -192,7 +192,7 @@ test('View Company', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -207,7 +207,7 @@ test('Search Company', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
     let req: CompanySearchQuery = {
@@ -226,7 +226,7 @@ test('Search Company', async () => {
     let res = await client.searchCompany(req);
 
     expect(res.status).toEqual(Status.Success);
-    expect(res.data.result.length).toEqual(2);
+    expect(res.data.result.length).toBeGreaterThan(0);
 });
 
 test('Archive company', async () => {
@@ -235,7 +235,7 @@ test('Archive company', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -254,7 +254,7 @@ test('Unarchive company', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
@@ -273,7 +273,7 @@ test('Delete company', async () => {
         passphrase: ''
     });
 
-    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://adam.pliance.io/', agent);
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://secure.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
 
