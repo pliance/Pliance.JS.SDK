@@ -73,7 +73,7 @@ class PlianceClient implements IPlianceClient {
 
     public async searchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult> {
         try {
-            var params = qs.stringify(query);
+            var params = qs.stringify(query, { allowDots: true });
             let response = await this.execute<PersonSearchQueryResult>(`PersonQuery/Search?${params}`, 'get');
             return response;
         }
@@ -118,7 +118,7 @@ class PlianceClient implements IPlianceClient {
 
     public async deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse> {
         try {
-            var params = qs.stringify(command);
+            var params = qs.stringify(command, { allowDots: true });
             let response = await this.execute<ClassifyHitResponse>(`PersonCommand?${params}`, 'delete');
             return response;
         }
@@ -158,7 +158,7 @@ class PlianceClient implements IPlianceClient {
 
     public async searchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult> {
         try {
-            var params = qs.stringify(query);
+            var params = qs.stringify(query, { allowDots: true });
             let response = await this.execute<CompanySearchQueryResult>(`CompanyQuery/Search?${params}`, 'get');
             return response;
         }
@@ -192,7 +192,7 @@ class PlianceClient implements IPlianceClient {
 
     public async deleteCompany(command: DeleteCompanyCommand): Promise<DeletePersonResponse> {
         try {
-            var params = qs.stringify(command);
+            var params = qs.stringify(command, { allowDots: true });
             let response = await this.execute<DeleteCompanyResponse>(`companyCommand?${params}`, 'delete');
             return response;
         }
