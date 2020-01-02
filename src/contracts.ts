@@ -96,20 +96,20 @@ export enum Gender {
 
 // Search Person
 export interface PersonSearchQuery {
-    page: Page;
-    filter: Filter;
-    query: string;
+    page?: Page;
+    filter?: Filter;
+    query?: string;
 }
 
 export interface Page {
-    size: number;
-    no: number;
+    size?: number;
+    no?: number;
 }
 
 export interface Filter {
-    isPep: boolean | null;
-    isRca: boolean | null;
-    isSanction: boolean | null;
+    isPep?: boolean | null;
+    isRca?: boolean | null;
+    isSanction?: boolean | null;
 }
 
 export interface PersonSearchResult {
@@ -241,9 +241,9 @@ export interface ViewCompanyQueryResult extends ResponseT<ViewCompanyResponseDat
 
 // Search Company
 export interface CompanySearchQuery {
-    page: Page;
-    filter: Filter;
-    query: string;
+    page?: Page;
+    filter?: Filter;
+    query?: string;
 }  
 
 export interface CompanySearchQueryResult extends ResponseT<CompanySearchResponseData> {

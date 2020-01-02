@@ -88,19 +88,21 @@ test('Search person', async () => {
     let client = clientFactory.create('givenname', 'sub');
 
     let query: PersonSearchQuery = {
-        query: 'Osama bin',
-        page: {
-            size: 10,
-            no: 1
-        },
-        filter: {
-            isSanction: true,
-            isPep: null,
-            isRca: null
-        }
+        query: 'ebba',
+        // page: {
+        //     size: 10,
+        //     no: 1
+        // },
+        // filter: {
+        //     // isSanction: null,
+        //     // isPep: true,
+        //     // isRca: null
+        // }
     };
 
     let res = await client.searchPerson(query);
+
+    console.log(res);
 
     expect(res.status).toEqual(Status.Success);
     expect(res.data.result.length).toBeGreaterThan(0);
@@ -212,15 +214,15 @@ test('Search Company', async () => {
     let client = clientFactory.create('givenname', 'sub');
     let req: CompanySearchQuery = {
         query: 'Plisec',
-        page: {
-            size: 10,
-            no: 1
-        },
-        filter: {
-            isSanction: true,
-            isPep: null,
-            isRca: null
-        }
+        // page: {
+        //     size: 10,
+        //     no: 1
+        // },
+        // filter: {
+        //     isSanction: null,
+        //     isPep: true,
+        //     isRca: null
+        // }
     };
 
     let res = await client.searchCompany(req);
