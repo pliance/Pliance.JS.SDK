@@ -1,3 +1,5 @@
+import { ExecSyncOptionsWithBufferEncoding } from "child_process";
+
 export  interface ResponseT<T> extends Response {
     data: T;
 }
@@ -61,6 +63,7 @@ enum Fuzziness {
 
 export interface Hit {
     matchId: string;
+    aliasId: string;
 }
 
 export interface RegisterPersonResponse extends Response {

@@ -64,11 +64,13 @@ test('Classify person', async () => {
     let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://local.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
+    
+    let view = await client.viewPerson('reference-id');
 
     let req: ClassifyHitCommand = {
         personReferenceId: 'reference-id',
-        matchId: 'EuSanction-833',
-        aliasId: 'a1be37af314c0cc35c5f9f4124f5f6aa0c050fbe5846e020ae17c0fe02c8c55e',
+        matchId: view.data.hits[0][0].matchId,
+        aliasId: view.data.hits[0][0].aliasId,
         classification: ClassificationType.FalsePositive
     };
 
