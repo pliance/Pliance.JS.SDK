@@ -1,13 +1,14 @@
 import * as crypto from 'crypto';
-import {default as fetch, Headers} from 'node-fetch';
+import { default as fetch, Headers } from 'node-fetch';
 import { Agent } from "https";
 import * as qs from 'qs';
 
-import {RegisterPersonCommand, RegisterPersonResponse, 
-    ViewPersonQueryResult, PersonSearchQuery, PersonSearchQueryResult, ClassifyHitCommand, ClassifyHitResponse, 
-    ArchivePersonResponse, ArchivePersonCommand, 
+import {
+    RegisterPersonCommand, RegisterPersonResponse,
+    ViewPersonQueryResult, PersonSearchQuery, PersonSearchQueryResult, ClassifyHitCommand, ClassifyHitResponse,
+    ArchivePersonResponse, ArchivePersonCommand,
     UnarchivePersonResponse, UnarchivePersonCommand,
-    DeletePersonCommand, DeletePersonResponse, 
+    DeletePersonCommand, DeletePersonResponse,
     RegisterCompanyCommand, RegisterCompanyResponse,
     ViewCompanyQueryResult,
     CompanySearchQuery, CompanySearchQueryResult,
@@ -32,8 +33,13 @@ export class ClientFactory {
 
         let body = data != undefined ? JSON.stringify(data) : undefined;
         let url = this.url + 'api/' + endpoint;
-        let response = await fetch(url, {method: method, headers: headers, body: body, agent: this.agent});
+        let response = await fetch(url, { method: method, headers: headers, body: body, agent: this.agent });
         let json = await response.json();
+        let obj = <Response>json;
+
+        if (!obj.success) {
+            throw obj.message;
+        }
 
         return json;
     }
@@ -54,18 +60,18 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<RegisterPersonResponse>('PersonCommand', 'put', person);
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
     }
 
-    public async viewPerson(personReferenceId : string): Promise<ViewPersonQueryResult> {
+    public async viewPerson(personReferenceId: string): Promise<ViewPersonQueryResult> {
         try {
             let response = await this.execute<ViewPersonQueryResult>(`PersonQuery?personReferenceId=${personReferenceId}`, 'get');
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -77,7 +83,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<PersonSearchQueryResult>(`PersonQuery/Search?${params}`, 'get');
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -88,7 +94,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<ClassifyHitResponse>(`PersonCommand/Classify`, 'post', classifyPersonHit);
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -99,7 +105,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<ClassifyHitResponse>(`PersonCommand/archive`, 'post', command);
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -110,7 +116,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<ClassifyHitResponse>(`PersonCommand/unarchive`, 'post', command);
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -122,7 +128,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<ClassifyHitResponse>(`PersonCommand?${params}`, 'delete');
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -133,7 +139,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<RegisterCompanyResponse>('companyCommand', 'put', company);
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -150,7 +156,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<ViewCompanyQueryResult>(`CompanyQuery?companyReferenceId=${companyReferenceId}`, 'get');
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -162,7 +168,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<CompanySearchQueryResult>(`CompanyQuery/Search?${params}`, 'get');
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -173,7 +179,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<ArchiveCompanyResponse>(`companyCommand/archive`, 'post', command);
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -184,7 +190,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<UnarchiveCompanyResponse>(`companyCommand/unarchive`, 'post', command);
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -196,7 +202,7 @@ class PlianceClient implements IPlianceClient {
             let response = await this.execute<DeleteCompanyResponse>(`companyCommand?${params}`, 'delete');
             return response;
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             throw e;
         }
@@ -223,32 +229,32 @@ export interface IPlianceClient {
 class JWTFactory {
     public generateJWT(secret: string, issuer: string, givenName: string, subject: string): string {
         let header = {
-          "typ": "JWT",
-          "alg": "HS256"
+            "typ": "JWT",
+            "alg": "HS256"
         };
-      
+
         let time_now = Math.floor(new Date().getTime() / 1000);
         let exp = time_now + 300;
-      
+
         let body = {
-          "iat": time_now,
-          "nbf": time_now,
-          "exp": exp,
-          "aud": "pliance.io",
-          "iss": issuer,
-          "given_name": givenName,
-          "sub": subject
+            "iat": time_now,
+            "nbf": time_now,
+            "exp": exp,
+            "aud": "pliance.io",
+            "iss": issuer,
+            "given_name": givenName,
+            "sub": subject
         };
-      
+
         let token = [];
-      
+
         token[0] = this.base64url(JSON.stringify(header));
         token[1] = this.base64url(JSON.stringify(body));
         token[2] = this.genTokenSign(token, secret);
         return token.join(".");
-      }
-      
-      genTokenSign(token: string[], secret: string): string {
+    }
+
+    genTokenSign(token: string[], secret: string): string {
         if (token.length != 2) {
             throw new Error('missing token');
         }
@@ -256,11 +262,11 @@ class JWTFactory {
         let hmac = crypto.createHmac('sha256', secret);
         hmac.update(token.join("."));
         let base64Hash = hmac.digest('base64')
-      
-        return this.urlConvertBase64(base64Hash);
-      }
 
-      base64url (input: string): string {
+        return this.urlConvertBase64(base64Hash);
+    }
+
+    base64url(input: string): string {
         let base64String = this.btoa(input);
 
         return this.urlConvertBase64(base64String);
@@ -268,15 +274,22 @@ class JWTFactory {
 
     btoa(str: string): string {
         let buffer = Buffer.from(str, 'binary');
-    
+
         return buffer.toString('base64');
     }
 
-    urlConvertBase64(input: string) : string {
+    urlConvertBase64(input: string): string {
         let output = input.replace(/=+$/, '');
-      
+
         output = output.replace(/\+/g, '-');
         output = output.replace(/\//g, '_');
         return output;
     }
+}
+
+class Response {
+    status?: string;
+    success?: boolean;
+    message?: string;
+    checkpoint?: string;
 }

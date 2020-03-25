@@ -17,6 +17,29 @@ test('Ping', async () => {
     expect(res).toEqual(expect.anything());
 });
 
+test('Bad Request', async () => {
+    let agent = new Agent({
+        pfx: fs.readFileSync('client.pfx'),
+        passphrase: ''
+    });
+
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://local.pliance.io/', agent);
+
+    let client = clientFactory.create('givenname', 'sub');
+
+    let person: RegisterPersonCommand = <RegisterPersonCommand>{};
+
+    try
+    {
+        await client.registerPerson(person);
+        expect(true).toEqual(false);
+    }
+    catch (e)
+    {
+        expect(e).toEqual("Missing FirstName");
+    }
+});
+
 test('Register person', async () => {
     let agent = new Agent({
         pfx: fs.readFileSync('client.pfx'),
