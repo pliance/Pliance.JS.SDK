@@ -1,5 +1,5 @@
 import { ClientFactory } from '../index';
-import { RegisterPersonCommand, Status, PersonSearchQuery, ClassifyHitCommand, ClassificationType, ArchivePersonCommand, DeletePersonCommand, RegisterCompanyCommand,
+import { RegisterPersonCommand, Status, PersonSearchQuery, ClassifyPersonHitCommand, ClassificationType, ArchivePersonCommand, DeletePersonCommand, RegisterCompanyCommand,
     CompanySearchQuery, ArchiveCompanyCommand, DeleteCompanyCommand, UnarchivePersonCommand, UnarchiveCompanyCommand} from '../contracts';
 import { Agent } from 'https';
 import * as fs from 'fs';
@@ -14,6 +14,14 @@ test('Ping', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
     let res = await client.ping();
+    expect(res).toEqual(expect.anything());
+});
+
+test('No-cert', async () => {
+    let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://local-no-cert.pliance.io/');
+    let client = clientFactory.create('givenname', 'sub');
+    let res = await client.ping();
+    
     expect(res).toEqual(expect.anything());
 });
 
@@ -90,7 +98,7 @@ test('Classify person', async () => {
     
     let view = await client.viewPerson('reference-id');
 
-    let req: ClassifyHitCommand = {
+    let req: ClassifyPersonHitCommand = {
         personReferenceId: 'reference-id',
         matchId: view.data.hits[0][0].matchId,
         aliasId: view.data.hits[0][0].aliasId,

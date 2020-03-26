@@ -1,12 +1,14 @@
 import { ExecSyncOptionsWithBufferEncoding } from "child_process";
 
-export  interface ResponseT<T> extends Response {
+export interface ResponseGeneric<T> extends Response {
     data: T;
 }
 
 export interface Response {
     status: Status;
     checkpoint: string;
+    success: boolean;
+    message: string;
 }
 
 export enum Status {
@@ -18,15 +20,15 @@ export enum Status {
 
 // Register Person
 
-export interface  RegisterPersonCommand {
+export interface RegisterPersonCommand {
+    personReferenceId: string;
     identity?: PersonIdentity;
     firstName: string;
     lastName: string;
-    personReferenceId: string;
+    gender?: Gender;
+    birthdate?: Birthdate;
     addresses?: Address[];
     options?: RegisterPersonOptions;
-    birthdate?: Birthdate;
-    gender?: string;
 }
 
 export interface Birthdate {
@@ -45,8 +47,13 @@ interface Address {
 }
 
 export interface RegisterPersonOptions {
-    Order: Order;
-    Fuzziness: Fuzziness;
+    order: Order;
+    fuzziness: Fuzziness;
+}
+
+export interface RegisterCompanyOptions {
+    order: Order;
+    fuzziness: Fuzziness;
 }
 
 enum Order {
@@ -61,23 +68,30 @@ enum Fuzziness {
     Diacritics = 2,
 }
 
-export interface Hit {
+export interface PersonHit {
     matchId: string;
     aliasId: string;
+    matchedFirstName: TextMatch[];
+    matchedLastName: TextMatch[];
+    isPep: boolean;
+    isRca: boolean;
+    isSanction: boolean;
+    firstName: string;
+    lastName: string;
+    classification: ClassificationType;
 }
 
-export interface RegisterPersonResponse extends Response {
-    hits: Hit[][];
+export interface RegisterPersonResponse extends ResponseGeneric<ViewPersonResponseData> {
+    hits: PersonHit[][];
 }
 
 export class PersonIdentity {
     constructor(public identity: string, public country: string) {
-        
     }
 }
 
 // View Person
-export interface ViewPersonQueryResult extends ResponseT<ViewPersonResponseData> {
+export interface ViewPersonQueryResult extends ResponseGeneric<ViewPersonResponseData> {
 }
 
 export interface ViewPersonResponseData {
@@ -87,8 +101,20 @@ export interface ViewPersonResponseData {
     lastName: string;
     birthdate: string;
     addresses: Address[];
-    hits: Hit[][];
+    hits: PersonHit[][];
     gender: Gender;
+    archived: boolean;
+    IsPep: boolean;
+    IsRca: boolean;
+    IsSanction: boolean;
+    Birth: Birthdate;
+    highRiskCountry: boolean;
+    lastChanged: LastChanged;
+}
+
+export interface LastChanged {
+    timestampUtc: Date;
+    checkpoint: string;
 }
 
 export enum Gender {
@@ -110,9 +136,13 @@ export interface Page {
 }
 
 export interface Filter {
-    isPep?: boolean | null;
-    isRca?: boolean | null;
-    isSanction?: boolean | null;
+    isPep?: boolean;
+    isRca?: boolean;
+    isSanction?: boolean;
+}
+
+export interface PingResponse extends Response {
+    message: string;
 }
 
 export interface PersonSearchResult {
@@ -134,16 +164,16 @@ export interface PersonSearchResponseData {
     result: PersonSearchResult[];
 }
 
-export interface PersonSearchQueryResult extends ResponseT<PersonSearchResponseData>{
+export interface PersonSearchQueryResult extends ResponseGeneric<PersonSearchResponseData> {
 }
 
 // Classify match
 
-export interface ClassifyHitCommand {
+export interface ClassifyPersonHitCommand {
     personReferenceId: string;
-    matchId: string;        
-    aliasId: string;        
-    classification: ClassificationType;        
+    matchId: string;
+    aliasId: string;
+    classification: ClassificationType;
 }
 
 export enum ClassificationType {
@@ -160,8 +190,6 @@ export interface ClassifyHitResponse extends Response {
 export interface ArchivePersonCommand {
     personReferenceId: string;
 }
-
-
 
 export interface ArchivePersonResponse extends Response {
 }
@@ -188,6 +216,7 @@ export interface RegisterCompanyCommand {
     companyReferenceId: string;
     identity: CompanyIdentity;
     name: string;
+    options?: RegisterCompanyOptions;
 }
 
 export interface CompanyIdentity {
@@ -195,17 +224,21 @@ export interface CompanyIdentity {
     country: string;
 }
 
-export interface RegisterCompanyResponse extends Response {
+export interface RegisterCompanyResponse extends ResponseGeneric<ViewCompanyResponseData> {
 }
 
 // View Company
 
 export interface ViewCompanyResponseData {
-    companyReferenceId: string;
-    identity: CompanyIdentity;
-    name: string;
-    graph: Graph;
-    beneficiaries: Beneficiary[];
+	companyReferenceId : string;
+	identity: CompanyIdentity;
+	name: string;
+	beneficiaries: ViewPersonResponseData[];
+	archived: boolean;
+	highRiskCountry: boolean;
+	hits: CompanyHit[][];
+	lastChanged: LastChanged;
+	isSanction: boolean;
 }
 
 export interface Beneficiary {
@@ -225,6 +258,15 @@ export interface Graph {
     links: Link[];
 }
 
+export interface CompanyHit {
+	matchId: string;
+	aliasId: string;
+	isSanction: boolean;
+	classification: ClassificationType;
+	name: string;
+	matchedName: TextMatch[];
+}
+
 export interface Node {
     id: number;
     name: string;
@@ -239,7 +281,7 @@ export interface Link {
     type: string;
 }
 
-export interface ViewCompanyQueryResult extends ResponseT<ViewCompanyResponseData>{
+export interface ViewCompanyQueryResult extends ResponseGeneric<ViewCompanyResponseData> {
 }
 
 // Search Company
@@ -247,9 +289,9 @@ export interface CompanySearchQuery {
     page?: Page;
     filter?: Filter;
     query?: string;
-}  
+}
 
-export interface CompanySearchQueryResult extends ResponseT<CompanySearchResponseData> {
+export interface CompanySearchQueryResult extends ResponseGeneric<CompanySearchResponseData> {
 }
 
 export interface CompanySearchResponseData {
@@ -263,6 +305,7 @@ export interface CompanySearchResult {
     isRca: boolean;
     isSanction: boolean;
     identity: CompanyIdentity;
+    archived: boolean;
 }
 
 // Delete Company
@@ -294,3 +337,14 @@ export interface DeleteCompanyCommand {
 
 export interface DeleteCompanyResponse extends Response {
 }
+
+export interface ClassifyCompanyHitCommand {
+    companyReferenceId: string;
+    matchId: string;
+    aliasId: string;
+    classification: ClassificationType;
+}
+
+export interface ClassifyCompanyHitResponse extends Response {
+}
+

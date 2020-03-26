@@ -5,7 +5,8 @@ import * as qs from 'qs';
 
 import {
     RegisterPersonCommand, RegisterPersonResponse,
-    ViewPersonQueryResult, PersonSearchQuery, PersonSearchQueryResult, ClassifyHitCommand, ClassifyHitResponse,
+    ViewPersonQueryResult, PersonSearchQuery, PersonSearchQueryResult,
+    ClassifyPersonHitCommand, ClassifyHitResponse,
     ArchivePersonResponse, ArchivePersonCommand,
     UnarchivePersonResponse, UnarchivePersonCommand,
     DeletePersonCommand, DeletePersonResponse,
@@ -16,6 +17,24 @@ import {
     UnarchiveCompanyCommand, UnarchiveCompanyResponse,
     DeleteCompanyCommand, DeleteCompanyResponse
 } from './contracts'
+
+export interface IPlianceClient {
+    ping(): Promise<string>;
+    registerPerson(person: RegisterPersonCommand): Promise<RegisterPersonResponse>;
+    viewPerson(personReferenceId: string): Promise<ViewPersonQueryResult>;
+    searchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult>;
+    classifyPersonHit(classifyPersonHit: ClassifyPersonHitCommand): Promise<ClassifyHitResponse>;
+    archivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse>;
+    unarchivePerson(command: UnarchivePersonCommand): Promise<UnarchivePersonResponse>;
+    deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse>;
+    registerCompany(company: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
+    viewCompany(companyReferenceId: string): Promise<ViewCompanyQueryResult>;
+    searchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult>;
+    archiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse>;
+    unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse>;
+    deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
+    classifyCompanyHit(classifyCompanyHit: ClassifyPersonHitCommand): Promise<ClassifyHitResponse>;
+}
 
 export class ClientFactory {
     constructor(private secret: string, private issuer: string, private url: string, private agent?: Agent) {
@@ -89,7 +108,7 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    public async classifyPersonHit(classifyPersonHit: ClassifyHitCommand): Promise<ClassifyHitResponse> {
+    public async classifyPersonHit(classifyPersonHit: ClassifyPersonHitCommand): Promise<ClassifyHitResponse> {
         try {
             let response = await this.execute<ClassifyHitResponse>(`PersonCommand/Classify`, 'post', classifyPersonHit);
             return response;
@@ -207,23 +226,17 @@ class PlianceClient implements IPlianceClient {
             throw e;
         }
     }
-}
 
-export interface IPlianceClient {
-    ping(): Promise<string>;
-    registerPerson(person: RegisterPersonCommand): Promise<RegisterPersonResponse>;
-    viewPerson(personReferenceId: string): Promise<ViewPersonQueryResult>;
-    searchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult>;
-    classifyPersonHit(classifyPersonHit: ClassifyHitCommand): Promise<ClassifyHitResponse>;
-    archivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse>;
-    unarchivePerson(command: UnarchivePersonCommand): Promise<UnarchivePersonResponse>;
-    deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse>;
-    registerCompany(company: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
-    viewCompany(companyReferenceId: string): Promise<ViewCompanyQueryResult>;
-    searchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult>;
-    archiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse>;
-    unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse>;
-    deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
+    public async classifyCompanyHit(classifyCompanyHit: ClassifyPersonHitCommand): Promise<ClassifyHitResponse> {
+        try {
+            let response = await this.execute<ClassifyHitResponse>(`CompanyCommand/Classify`, 'post', classifyCompanyHit);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }    
 }
 
 class JWTFactory {
