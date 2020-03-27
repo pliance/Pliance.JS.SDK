@@ -4,18 +4,42 @@ import { Agent } from "https";
 import * as qs from 'qs';
 
 import {
-    RegisterPersonCommand, RegisterPersonResponse,
-    ViewPersonQueryResult, PersonSearchQuery, PersonSearchQueryResult,
-    ClassifyPersonHitCommand, ClassifyHitResponse,
-    ArchivePersonResponse, ArchivePersonCommand,
-    UnarchivePersonResponse, UnarchivePersonCommand,
-    DeletePersonCommand, DeletePersonResponse,
-    RegisterCompanyCommand, RegisterCompanyResponse,
+    RegisterPersonCommand,
+    RegisterPersonResponse,
+    ViewPersonQueryResult,
+    PersonSearchQuery,
+    PersonSearchQueryResult,
+    ClassifyPersonHitCommand,
+    ClassifyHitResponse,
+    ArchivePersonResponse,
+    ArchivePersonCommand,
+    UnarchivePersonResponse,
+    UnarchivePersonCommand,
+    DeletePersonCommand,
+    DeletePersonResponse,
+    RegisterCompanyCommand,
+    RegisterCompanyResponse,
     ViewCompanyQueryResult,
-    CompanySearchQuery, CompanySearchQueryResult,
-    ArchiveCompanyCommand, ArchiveCompanyResponse,
-    UnarchiveCompanyCommand, UnarchiveCompanyResponse,
-    DeleteCompanyCommand, DeleteCompanyResponse
+    CompanySearchQuery,
+    CompanySearchQueryResult,
+    ArchiveCompanyCommand,
+    ArchiveCompanyResponse,
+    UnarchiveCompanyCommand,
+    UnarchiveCompanyResponse,
+    DeleteCompanyCommand,
+    DeleteCompanyResponse,
+    FeedQuery,
+    FeedQueryResult,
+    WebhookUpdateCommand,
+    WebhookUpdateResponse,
+    WebhookQuery,
+    WebhookQueryResult,
+    WatchlistCompanyQuery,
+    WatchlistCompanyQueryResult,
+    WatchlistQuery,
+    WatchlistQueryResult,
+    WatchlistQuery_v2,
+    WatchlistQueryResult_v2,
 } from './contracts'
 
 export interface IPlianceClient {
@@ -34,6 +58,12 @@ export interface IPlianceClient {
     unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse>;
     deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
     classifyCompanyHit(classifyCompanyHit: ClassifyPersonHitCommand): Promise<ClassifyHitResponse>;
+    feed(classifyCompanyHit: FeedQuery): Promise<FeedQueryResult>;
+    saveWebhook(command: WebhookUpdateCommand): Promise<WebhookUpdateResponse>;
+    getWebhook(request: WebhookQuery): Promise<WebhookQueryResult>;
+    watchlistCompany(query: WatchlistCompanyQuery): Promise<WatchlistCompanyQueryResult>;
+    watchlistPerson(query: WatchlistQuery): Promise<WatchlistQueryResult>;
+    watchlistPerson_v2(query: WatchlistQuery_v2): Promise<WatchlistQueryResult_v2>;
 }
 
 export class ClientFactory {
@@ -100,6 +130,18 @@ class PlianceClient implements IPlianceClient {
         try {
             var params = qs.stringify(query, { allowDots: true });
             let response = await this.execute<PersonSearchQueryResult>(`PersonQuery/Search?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async feed(query: FeedQuery): Promise<FeedQueryResult> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<FeedQueryResult>(`FeedQuery/?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -204,6 +246,29 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
+    public async saveWebhook(command: WebhookUpdateCommand): Promise<WebhookUpdateResponse> {
+        try {
+            let response = await this.execute<WebhookUpdateResponse>(`WebhookCommand`, 'post', command);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async getWebhook(request: WebhookQuery): Promise<WebhookQueryResult> {
+        try {
+            let response = await this.execute<WebhookQueryResult>(`WebhookQuery`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+
     public async unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse> {
         try {
             let response = await this.execute<UnarchiveCompanyResponse>(`companyCommand/unarchive`, 'post', command);
@@ -236,7 +301,43 @@ class PlianceClient implements IPlianceClient {
             console.log(e);
             throw e;
         }
-    }    
+    }
+
+    public async watchlistCompany(query: WatchlistCompanyQuery): Promise<WatchlistCompanyQueryResult> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<WatchlistCompanyQueryResult>(`api/WatchlistQuery/?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async watchlistPerson(query: WatchlistQuery): Promise<WatchlistQueryResult> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<WatchlistQueryResult>(`api/WatchlistQuery/v2/?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    public async watchlistPerson_v2(query: WatchlistQuery_v2): Promise<WatchlistQueryResult_v2> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<WatchlistQueryResult_v2>(`api/WatchlistQuery/Company/?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
 }
 
 class JWTFactory {

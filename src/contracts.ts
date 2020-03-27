@@ -230,15 +230,15 @@ export interface RegisterCompanyResponse extends ResponseGeneric<ViewCompanyResp
 // View Company
 
 export interface ViewCompanyResponseData {
-	companyReferenceId : string;
-	identity: CompanyIdentity;
-	name: string;
-	beneficiaries: ViewPersonResponseData[];
-	archived: boolean;
-	highRiskCountry: boolean;
-	hits: CompanyHit[][];
-	lastChanged: LastChanged;
-	isSanction: boolean;
+    companyReferenceId: string;
+    identity: CompanyIdentity;
+    name: string;
+    beneficiaries: ViewPersonResponseData[];
+    archived: boolean;
+    highRiskCountry: boolean;
+    hits: CompanyHit[][];
+    lastChanged: LastChanged;
+    isSanction: boolean;
 }
 
 export interface Beneficiary {
@@ -259,12 +259,12 @@ export interface Graph {
 }
 
 export interface CompanyHit {
-	matchId: string;
-	aliasId: string;
-	isSanction: boolean;
-	classification: ClassificationType;
-	name: string;
-	matchedName: TextMatch[];
+    matchId: string;
+    aliasId: string;
+    isSanction: boolean;
+    classification: ClassificationType;
+    name: string;
+    matchedName: TextMatch[];
 }
 
 export interface Node {
@@ -348,3 +348,151 @@ export interface ClassifyCompanyHitCommand {
 export interface ClassifyCompanyHitResponse extends Response {
 }
 
+export interface FeedQuery {
+    from: string;
+}
+
+export interface FeedQueryItem {
+    checkpoint: string;
+    type: string;
+    body: any;
+}
+
+export interface FeedQueryResult extends ResponseGeneric<FeedQueryResultData> {
+}
+
+export interface FeedQueryResultData {
+    items: FeedQueryItem[];
+}
+
+
+export interface WebhookQuery {
+
+}
+
+export interface WebhookQueryResult extends ResponseGeneric<WebhookQueryResultData> {
+}
+
+export interface WebhookQueryResultData {
+    enabled: boolean;
+    url: string;
+    secret: string;
+}
+
+export interface WebhookQueryResultData {
+    enabled: boolean;
+    url: string;
+    secret: string;
+}
+
+export interface WebhookUpdateResponse extends Response {
+}
+
+export interface WebhookUpdateCommand {
+    enabled: boolean;
+    url: string;
+    secret: string;
+}
+
+export interface ListAddress {
+    street1: string;
+    street2: string;
+    streetNo: string;
+    postalCode: string;
+    city: string;
+    country: string;
+}
+
+export interface ListBirthdate {
+    Circa: boolean;
+    Year?: number;
+    Month?: number;
+    Day?: number;
+    FromYear: number;
+    ToYear: number;
+}
+
+export interface ListCompanyNameViewModel {
+    type: string;
+    name: string;
+    selectedName: TextMatch[];
+}
+
+export interface ListCompanyViewModel {
+    companyReferenceId: string;
+    isSanction: boolean;
+    names: ListCompanyNameViewModel;
+    sanctionLists: string;
+}
+
+export interface ListNameViewModel {
+    firstName: string;
+    lastName: string;
+    selectedFirstName: TextMatch[];
+    selectedLastName: TextMatch[];
+    type: string;
+}
+
+export interface ListPersonViewModel {
+	listId: String;
+	nationalIdentificationNumber: String;
+	names: ListNameViewModel[];
+	birthdates: ListBirthdate[];
+	addresses: ListAddress[];
+	countries: String[];
+	isPep: boolean;
+	isRca: boolean;
+	isSanction: boolean;
+	nationalities: String[];
+	images: String[];
+	roles: ListRole[];
+	relations: ListRelationViewModel[];
+	gender: Gender;
+	lists: String[];
+}
+
+export interface ListRelationViewModel {
+    firstName: string;
+    lastName: string;
+    relationPersonId: string;
+    isPep: boolean;
+    isRca: boolean;
+    isSanction: boolean;
+    relationType: string;
+}
+
+export interface ListRole {
+    Description: string;
+    IsActive: boolean;
+    SinceYear: string;
+    SinceMonth: string;
+    SinceDay: string;
+    ToYear: string;
+    ToMonth: string;
+    ToDay: string;
+}
+
+export interface WatchlistCompanyQuery {
+    matchId: string;
+    companyReferenceId: string;
+}
+
+export interface WatchlistCompanyQueryResult extends ResponseGeneric<ListCompanyViewModel> {
+}
+
+export interface WatchlistQuery {
+    id: string;
+    firstName: string;
+    lastName: string;
+}
+
+export interface WatchlistQueryResult extends ResponseGeneric<ListPersonViewModel> {
+}
+
+export interface WatchlistQueryResult_v2 extends ResponseGeneric<ListPersonViewModel> {
+}
+
+export interface WatchlistQuery_v2 {
+    matchId: string;
+    personReferenceId: string;
+}
