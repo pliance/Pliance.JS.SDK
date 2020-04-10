@@ -1,6 +1,6 @@
 import { ClientFactory } from '../index';
-import { RegisterPersonCommand, Status, PersonSearchQuery, ClassifyPersonHitCommand, ClassificationType, ArchivePersonCommand, DeletePersonCommand, RegisterCompanyCommand,
-    CompanySearchQuery, ArchiveCompanyCommand, DeleteCompanyCommand, UnarchivePersonCommand, UnarchiveCompanyCommand} from '../contracts';
+import { RegisterPersonCommand, ResponseStatus, PersonSearchQuery, ClassifyPersonHitCommand, ClassificationType, ArchivePersonCommand, DeletePersonCommand, RegisterCompanyCommand,
+    CompanySearchQuery, ViewCompanyQuery, ArchiveCompanyCommand, DeleteCompanyCommand, UnarchivePersonCommand, UnarchiveCompanyCommand, PingQuery, ViewPersonQuery} from '../contracts';
 import { Agent } from 'https';
 import * as fs from 'fs';
 
@@ -11,16 +11,17 @@ test('Ping', async () => {
     });
 
     let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://local.pliance.io/', agent);
-
     let client = clientFactory.create('givenname', 'sub');
-    let res = await client.ping();
+    let query = <PingQuery>{};
+    let res = await client.ping(query);
     expect(res).toEqual(expect.anything());
 });
 
 test('No-cert', async () => {
     let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://local-no-cert.pliance.io/');
     let client = clientFactory.create('givenname', 'sub');
-    let res = await client.ping();
+    let query = <PingQuery>{};
+    let res = await client.ping(query);
     
     expect(res).toEqual(expect.anything());
 });
@@ -58,7 +59,7 @@ test('Register person', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let person: RegisterPersonCommand = {
+    let person = <RegisterPersonCommand>{
         firstName: 'Osama',
         lastName: 'bin laden',
         personReferenceId: 'reference-id'
@@ -66,7 +67,7 @@ test('Register person', async () => {
 
     let res = await client.registerPerson(person);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
     expect(res.hits.length).toEqual(1);
 });
 
@@ -80,9 +81,10 @@ test('View person', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let res = await client.viewPerson('reference-id');
+    let query = <ViewPersonQuery>{ personReferenceId: 'reference-id' }
+    let res = await client.viewPerson(query);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
     expect(res.data.hits.length).toEqual(1);
 });
 
@@ -96,7 +98,8 @@ test('Classify person', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
     
-    let view = await client.viewPerson('reference-id');
+    let query = <ViewPersonQuery>{ personReferenceId: 'reference-id' }
+    let view = await client.viewPerson(query);
 
     let req: ClassifyPersonHitCommand = {
         personReferenceId: 'reference-id',
@@ -107,7 +110,7 @@ test('Classify person', async () => {
 
     let res = await client.classifyPersonHit(req);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
 });
 
 test('Search person', async () => {
@@ -120,7 +123,7 @@ test('Search person', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let query: PersonSearchQuery = {
+    let query: PersonSearchQuery = <PersonSearchQuery>{
         query: 'ebba',
         // page: {
         //     size: 10,
@@ -135,9 +138,7 @@ test('Search person', async () => {
 
     let res = await client.searchPerson(query);
 
-    console.log(res);
-
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
     expect(res.data.result.length).toBeGreaterThan(0);
 });
 
@@ -156,7 +157,7 @@ test('Archive person', async () => {
 
     let res = await client.archivePerson(command);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
 });
 
 test('Unarchive person', async () => {
@@ -174,7 +175,7 @@ test('Unarchive person', async () => {
 
     let res = await client.unarchivePerson(command);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
 });
 
 test('Delete person', async () => {
@@ -193,7 +194,7 @@ test('Delete person', async () => {
 
     let res = await client.deletePerson(command);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
 });
 
 test('Register company', async () => {
@@ -206,7 +207,7 @@ test('Register company', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let person: RegisterCompanyCommand = {
+    let person: RegisterCompanyCommand = <RegisterCompanyCommand>{
         name: 'Plisec',
         companyReferenceId: 'comp-reference-id',
         identity: {
@@ -217,7 +218,7 @@ test('Register company', async () => {
 
     let res = await client.registerCompany(person);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
 });
 
 
@@ -231,9 +232,10 @@ test('View Company', async () => {
 
     let client = clientFactory.create('givenname', 'sub');
 
-    let res = await client.viewCompany('comp-reference-id');
+    let query = <ViewCompanyQuery>{ companyReferenceId: 'comp-reference-id' }
+    let res = await client.viewCompany(query);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
 });
 
 test('Search Company', async () => {
@@ -245,7 +247,7 @@ test('Search Company', async () => {
     let clientFactory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://local.pliance.io/', agent);
 
     let client = clientFactory.create('givenname', 'sub');
-    let req: CompanySearchQuery = {
+    let req = <CompanySearchQuery>{
         query: 'Plisec',
         // page: {
         //     size: 10,
@@ -260,7 +262,7 @@ test('Search Company', async () => {
 
     let res = await client.searchCompany(req);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
     expect(res.data.result.length).toBeGreaterThan(0);
 });
 
@@ -280,7 +282,7 @@ test('Archive company', async () => {
 
     let res = await client.archiveCompany(command);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
 });
 
 test('Unarchive company', async () => {
@@ -299,7 +301,7 @@ test('Unarchive company', async () => {
 
     let res = await client.unarchiveCompany(command);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
 });
 
 test('Delete company', async () => {
@@ -318,5 +320,5 @@ test('Delete company', async () => {
 
     let res = await client.deleteCompany(command);
 
-    expect(res.status).toEqual(Status.Success);
+    expect(res.status).toEqual(ResponseStatus.Success);
 });

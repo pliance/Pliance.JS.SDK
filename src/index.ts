@@ -4,66 +4,85 @@ import { Agent } from "https";
 import * as qs from 'qs';
 
 import {
-    RegisterPersonCommand,
-    RegisterPersonResponse,
-    ViewPersonQueryResult,
-    PersonSearchQuery,
-    PersonSearchQueryResult,
-    ClassifyPersonHitCommand,
-    ClassifyHitResponse,
+    Response,
+    // @inject: imports
+    ArchiveCompanyResponse,
+    ArchiveCompanyCommand,
     ArchivePersonResponse,
     ArchivePersonCommand,
+    CompanyGraphBeneficiariesResult,
+    CompanyGraphBeneficiariesQuery,
+    ClassifyCompanyHitResponse,
+    ClassifyCompanyHitCommand,
+    ClassifyPersonHitResponse,
+    ClassifyPersonHitCommand,
+    DeleteCompanyResponse,
+    DeleteCompanyCommand,
+    DeletePersonResponse,
+    DeletePersonCommand,
+    FeedQueryResult,
+    FeedQuery,
+    ReportQueryResult,
+    ReportQuery,
+    WebhookQueryResult,
+    WebhookQuery,
+    PingResponse,
+    PingQuery,
+    RegisterCompanyResponse,
+    RegisterCompanyCommand,
+    RegisterPersonResponse,
+    RegisterPersonCommand,
+    WebhookUpdateResponse,
+    WebhookUpdateCommand,
+    CompanySearchQueryResult,
+    CompanySearchQuery,
+    PersonSearchQueryResult,
+    PersonSearchQuery,
+    UnarchiveCompanyResponse,
+    UnarchiveCompanyCommand,
     UnarchivePersonResponse,
     UnarchivePersonCommand,
-    DeletePersonCommand,
-    DeletePersonResponse,
-    RegisterCompanyCommand,
-    RegisterCompanyResponse,
     ViewCompanyQueryResult,
-    CompanySearchQuery,
-    CompanySearchQueryResult,
-    ArchiveCompanyCommand,
-    ArchiveCompanyResponse,
-    UnarchiveCompanyCommand,
-    UnarchiveCompanyResponse,
-    DeleteCompanyCommand,
-    DeleteCompanyResponse,
-    FeedQuery,
-    FeedQueryResult,
-    WebhookUpdateCommand,
-    WebhookUpdateResponse,
-    WebhookQuery,
-    WebhookQueryResult,
-    WatchlistCompanyQuery,
+    ViewCompanyQuery,
+    ViewPersonQueryResult,
+    ViewPersonQuery,
     WatchlistCompanyQueryResult,
-    WatchlistQuery,
+    WatchlistCompanyQuery,
     WatchlistQueryResult,
-    WatchlistQuery_v2,
+    WatchlistQuery,
     WatchlistQueryResult_v2,
+    WatchlistQuery_v2,
+
+    // @inject: !imports
 } from './contracts'
 
 export interface IPlianceClient {
-    ping(): Promise<string>;
-    registerPerson(person: RegisterPersonCommand): Promise<RegisterPersonResponse>;
-    viewPerson(personReferenceId: string): Promise<ViewPersonQueryResult>;
-    searchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult>;
-    classifyPersonHit(classifyPersonHit: ClassifyPersonHitCommand): Promise<ClassifyHitResponse>;
-    archivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse>;
-    unarchivePerson(command: UnarchivePersonCommand): Promise<UnarchivePersonResponse>;
-    deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse>;
-    registerCompany(company: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
-    viewCompany(companyReferenceId: string): Promise<ViewCompanyQueryResult>;
-    searchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult>;
+    // @inject: interface
     archiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse>;
-    unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse>;
+    archivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse>;
+    beneficiaries(query: CompanyGraphBeneficiariesQuery): Promise<CompanyGraphBeneficiariesResult>;
+    classifyCompanyHit(command: ClassifyCompanyHitCommand): Promise<ClassifyCompanyHitResponse>;
+    classifyPersonHit(command: ClassifyPersonHitCommand): Promise<ClassifyPersonHitResponse>;
     deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
-    classifyCompanyHit(classifyCompanyHit: ClassifyPersonHitCommand): Promise<ClassifyHitResponse>;
-    feed(classifyCompanyHit: FeedQuery): Promise<FeedQueryResult>;
+    deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse>;
+    feed(query: FeedQuery): Promise<FeedQueryResult>;
+    getReport(query: ReportQuery): Promise<ReportQueryResult>;
+    getWebhook(query: WebhookQuery): Promise<WebhookQueryResult>;
+    ping(query: PingQuery): Promise<PingResponse>;
+    registerCompany(command: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
+    registerPerson(command: RegisterPersonCommand): Promise<RegisterPersonResponse>;
     saveWebhook(command: WebhookUpdateCommand): Promise<WebhookUpdateResponse>;
-    getWebhook(request: WebhookQuery): Promise<WebhookQueryResult>;
+    searchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult>;
+    searchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult>;
+    unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse>;
+    unarchivePerson(command: UnarchivePersonCommand): Promise<UnarchivePersonResponse>;
+    viewCompany(query: ViewCompanyQuery): Promise<ViewCompanyQueryResult>;
+    viewPerson(query: ViewPersonQuery): Promise<ViewPersonQueryResult>;
     watchlistCompany(query: WatchlistCompanyQuery): Promise<WatchlistCompanyQueryResult>;
     watchlistPerson(query: WatchlistQuery): Promise<WatchlistQueryResult>;
-    watchlistPerson_v2(query: WatchlistQuery_v2): Promise<WatchlistQueryResult_v2>;
+    watchlistPersonV2(query: WatchlistQuery_v2): Promise<WatchlistQueryResult_v2>;
+
+    // @inject: !interface
 }
 
 export class ClientFactory {
@@ -81,7 +100,7 @@ export class ClientFactory {
         headers.append('Content-Type', 'application/json');
 
         let body = data != undefined ? JSON.stringify(data) : undefined;
-        let url = this.url + 'api/' + endpoint;
+        let url = this.url + endpoint;
         let response = await fetch(url, { method: method, headers: headers, body: body, agent: this.agent });
         let json = await response.json();
         let obj = <Response>json;
@@ -98,38 +117,11 @@ class PlianceClient implements IPlianceClient {
     constructor(private clientFactory: ClientFactory, private givenName: string, private subject: string) {
     }
 
-    public async ping(): Promise<string> {
-        let response = await this.execute<string>('ping', 'get');
-
-        return response;
-    }
-
-    public async registerPerson(person: RegisterPersonCommand): Promise<RegisterPersonResponse> {
-        try {
-            let response = await this.execute<RegisterPersonResponse>('PersonCommand', 'put', person);
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async viewPerson(personReferenceId: string): Promise<ViewPersonQueryResult> {
-        try {
-            let response = await this.execute<ViewPersonQueryResult>(`PersonQuery?personReferenceId=${personReferenceId}`, 'get');
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async searchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult> {
+    // @inject: methods
+    async searchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult> {
         try {
             var params = qs.stringify(query, { allowDots: true });
-            let response = await this.execute<PersonSearchQueryResult>(`PersonQuery/Search?${params}`, 'get');
+            let response = await this.execute<CompanySearchQueryResult>(`api/CompanyQuery/Search?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -138,10 +130,10 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    public async feed(query: FeedQuery): Promise<FeedQueryResult> {
+    async viewCompany(query: ViewCompanyQuery): Promise<ViewCompanyQueryResult> {
         try {
             var params = qs.stringify(query, { allowDots: true });
-            let response = await this.execute<FeedQueryResult>(`FeedQuery/?${params}`, 'get');
+            let response = await this.execute<ViewCompanyQueryResult>(`api/CompanyQuery/?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -150,9 +142,10 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    public async classifyPersonHit(classifyPersonHit: ClassifyPersonHitCommand): Promise<ClassifyHitResponse> {
+    async beneficiaries(query: CompanyGraphBeneficiariesQuery): Promise<CompanyGraphBeneficiariesResult> {
         try {
-            let response = await this.execute<ClassifyHitResponse>(`PersonCommand/Classify`, 'post', classifyPersonHit);
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<CompanyGraphBeneficiariesResult>(`api/CompanyQuery/Graph/Beneficiaries?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -161,9 +154,10 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    public async archivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse> {
+    async feed(query: FeedQuery): Promise<FeedQueryResult> {
         try {
-            let response = await this.execute<ClassifyHitResponse>(`PersonCommand/archive`, 'post', command);
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<FeedQueryResult>(`api/FeedQuery/?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -172,9 +166,10 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    public async unarchivePerson(command: UnarchivePersonCommand): Promise<UnarchivePersonResponse> {
+    async searchPerson(query: PersonSearchQuery): Promise<PersonSearchQueryResult> {
         try {
-            let response = await this.execute<ClassifyHitResponse>(`PersonCommand/unarchive`, 'post', command);
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<PersonSearchQueryResult>(`api/PersonQuery/Search?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -183,10 +178,127 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    public async deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse> {
+    async viewPerson(query: ViewPersonQuery): Promise<ViewPersonQueryResult> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<ViewPersonQueryResult>(`api/PersonQuery/?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async ping(query: PingQuery): Promise<PingResponse> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<PingResponse>(`api/Ping/?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async getReport(query: ReportQuery): Promise<ReportQueryResult> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<ReportQueryResult>(`api/ReportQuery/?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async watchlistPerson(query: WatchlistQuery): Promise<WatchlistQueryResult> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<WatchlistQueryResult>(`api/WatchlistQuery/?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async watchlistPersonV2(query: WatchlistQuery_v2): Promise<WatchlistQueryResult_v2> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<WatchlistQueryResult_v2>(`api/WatchlistQuery/v2?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async watchlistCompany(query: WatchlistCompanyQuery): Promise<WatchlistCompanyQueryResult> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<WatchlistCompanyQueryResult>(`api/WatchlistQuery/Company?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async getWebhook(query: WebhookQuery): Promise<WebhookQueryResult> {
+        try {
+            var params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<WebhookQueryResult>(`api/WebhookQuery/?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async registerCompany(command: RegisterCompanyCommand): Promise<RegisterCompanyResponse> {
+        try {
+            let response = await this.execute<RegisterCompanyResponse>(`api/CompanyCommand/`, 'put', command);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async archiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse> {
+        try {
+            let response = await this.execute<ArchiveCompanyResponse>(`api/CompanyCommand/Archive`, 'post', command);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse> {
+        try {
+            let response = await this.execute<UnarchiveCompanyResponse>(`api/CompanyCommand/Unarchive`, 'post', command);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse> {
         try {
             var params = qs.stringify(command, { allowDots: true });
-            let response = await this.execute<ClassifyHitResponse>(`PersonCommand?${params}`, 'delete');
+            let response = await this.execute<DeleteCompanyResponse>(`api/CompanyCommand/?${params}`, 'delete');
             return response;
         }
         catch (e) {
@@ -195,9 +307,9 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    public async registerCompany(company: RegisterCompanyCommand): Promise<RegisterCompanyResponse> {
+    async classifyCompanyHit(command: ClassifyCompanyHitCommand): Promise<ClassifyCompanyHitResponse> {
         try {
-            let response = await this.execute<RegisterCompanyResponse>('companyCommand', 'put', company);
+            let response = await this.execute<ClassifyCompanyHitResponse>(`api/CompanyCommand/Classify`, 'post', command);
             return response;
         }
         catch (e) {
@@ -206,138 +318,81 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    async execute<T>(endpoint: string, method: string, data?: any): Promise<T> {
+    async registerPerson(command: RegisterPersonCommand): Promise<RegisterPersonResponse> {
+        try {
+            let response = await this.execute<RegisterPersonResponse>(`api/PersonCommand/`, 'put', command);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async archivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse> {
+        try {
+            let response = await this.execute<ArchivePersonResponse>(`api/PersonCommand/Archive`, 'post', command);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async unarchivePerson(command: UnarchivePersonCommand): Promise<UnarchivePersonResponse> {
+        try {
+            let response = await this.execute<UnarchivePersonResponse>(`api/PersonCommand/Unarchive`, 'post', command);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse> {
+        try {
+            var params = qs.stringify(command, { allowDots: true });
+            let response = await this.execute<DeletePersonResponse>(`api/PersonCommand/?${params}`, 'delete');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async classifyPersonHit(command: ClassifyPersonHitCommand): Promise<ClassifyPersonHitResponse> {
+        try {
+            let response = await this.execute<ClassifyPersonHitResponse>(`api/PersonCommand/Classify`, 'post', command);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async saveWebhook(command: WebhookUpdateCommand): Promise<WebhookUpdateResponse> {
+        try {
+            let response = await this.execute<WebhookUpdateResponse>(`api/WebhookCommand/`, 'put', command);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+
+    // @inject: !methods
+
+    async execute<T/* extends Response*/>(endpoint: string, method: string, data?: any): Promise<T> {
         let response = await this.clientFactory.execute<T>(endpoint, method, this.givenName, this.subject, data);
 
         return response;
-    }
-
-    public async viewCompany(companyReferenceId: string): Promise<ViewCompanyQueryResult> {
-        try {
-            let response = await this.execute<ViewCompanyQueryResult>(`CompanyQuery?companyReferenceId=${companyReferenceId}`, 'get');
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async searchCompany(query: CompanySearchQuery): Promise<CompanySearchQueryResult> {
-        try {
-            var params = qs.stringify(query, { allowDots: true });
-            let response = await this.execute<CompanySearchQueryResult>(`CompanyQuery/Search?${params}`, 'get');
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async archiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse> {
-        try {
-            let response = await this.execute<ArchiveCompanyResponse>(`companyCommand/archive`, 'post', command);
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async saveWebhook(command: WebhookUpdateCommand): Promise<WebhookUpdateResponse> {
-        try {
-            let response = await this.execute<WebhookUpdateResponse>(`WebhookCommand`, 'post', command);
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async getWebhook(request: WebhookQuery): Promise<WebhookQueryResult> {
-        try {
-            let response = await this.execute<WebhookQueryResult>(`WebhookQuery`, 'get');
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-
-    public async unarchiveCompany(command: UnarchiveCompanyCommand): Promise<UnarchiveCompanyResponse> {
-        try {
-            let response = await this.execute<UnarchiveCompanyResponse>(`companyCommand/unarchive`, 'post', command);
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async deleteCompany(command: DeleteCompanyCommand): Promise<DeletePersonResponse> {
-        try {
-            var params = qs.stringify(command, { allowDots: true });
-            let response = await this.execute<DeleteCompanyResponse>(`companyCommand?${params}`, 'delete');
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async classifyCompanyHit(classifyCompanyHit: ClassifyPersonHitCommand): Promise<ClassifyHitResponse> {
-        try {
-            let response = await this.execute<ClassifyHitResponse>(`CompanyCommand/Classify`, 'post', classifyCompanyHit);
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async watchlistCompany(query: WatchlistCompanyQuery): Promise<WatchlistCompanyQueryResult> {
-        try {
-            var params = qs.stringify(query, { allowDots: true });
-            let response = await this.execute<WatchlistCompanyQueryResult>(`api/WatchlistQuery/?${params}`, 'get');
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async watchlistPerson(query: WatchlistQuery): Promise<WatchlistQueryResult> {
-        try {
-            var params = qs.stringify(query, { allowDots: true });
-            let response = await this.execute<WatchlistQueryResult>(`api/WatchlistQuery/v2/?${params}`, 'get');
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    public async watchlistPerson_v2(query: WatchlistQuery_v2): Promise<WatchlistQueryResult_v2> {
-        try {
-            var params = qs.stringify(query, { allowDots: true });
-            let response = await this.execute<WatchlistQueryResult_v2>(`api/WatchlistQuery/Company/?${params}`, 'get');
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
+    }    
 }
 
 class JWTFactory {
@@ -399,11 +454,4 @@ class JWTFactory {
         output = output.replace(/\//g, '_');
         return output;
     }
-}
-
-class Response {
-    status?: string;
-    success?: boolean;
-    message?: string;
-    checkpoint?: string;
 }
