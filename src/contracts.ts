@@ -502,5 +502,4 @@ export interface WebhookUpdateCommand {
 export interface WebhookUpdateResponse extends Response {
 }
 
-
 // @inject: !contracts
