@@ -3,3 +3,6 @@
 /client.pfx
 *.pfx
 package-lock.json
+.git
+Dockerfile
+*.tgz
