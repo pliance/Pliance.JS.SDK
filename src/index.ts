@@ -10,8 +10,6 @@ import {
     ArchiveCompanyCommand,
     ArchivePersonResponse,
     ArchivePersonCommand,
-    CompanyGraphBeneficiariesResult,
-    CompanyGraphBeneficiariesQuery,
     ClassifyCompanyHitResponse,
     ClassifyCompanyHitCommand,
     ClassifyPersonHitResponse,
@@ -50,8 +48,8 @@ import {
     WatchlistCompanyQuery,
     WatchlistQueryResult,
     WatchlistQuery,
-    WatchlistQueryResult_v2,
-    WatchlistQuery_v2,
+    WatchlistQueryResultV2,
+    WatchlistQueryV2,
     // @inject: !imports
 } from './contracts'
 
@@ -59,7 +57,6 @@ export interface IPlianceClient {
     // @inject: interface
     archiveCompany(command: ArchiveCompanyCommand): Promise<ArchiveCompanyResponse>;
     archivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse>;
-    beneficiaries(request: CompanyGraphBeneficiariesQuery): Promise<CompanyGraphBeneficiariesResult>;
     classifyCompanyHit(command: ClassifyCompanyHitCommand): Promise<ClassifyCompanyHitResponse>;
     classifyPersonHit(command: ClassifyPersonHitCommand): Promise<ClassifyPersonHitResponse>;
     deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
@@ -79,7 +76,7 @@ export interface IPlianceClient {
     viewPerson(request: ViewPersonQuery): Promise<ViewPersonQueryResult>;
     watchlistCompany(request: WatchlistCompanyQuery): Promise<WatchlistCompanyQueryResult>;
     watchlistPerson(request: WatchlistQuery): Promise<WatchlistQueryResult>;
-    watchlistPersonV2(request: WatchlistQuery_v2): Promise<WatchlistQueryResult_v2>;
+    watchlistPersonV2(request: WatchlistQueryV2): Promise<WatchlistQueryResultV2>;
     // @inject: !interface
 }
 
@@ -131,19 +128,7 @@ class PlianceClient implements IPlianceClient {
     async viewCompany(request: ViewCompanyQuery): Promise<ViewCompanyQueryResult> {
         try {
             var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<ViewCompanyQueryResult>(`api/CompanyQuery/?${params}`, 'get');
-            return response;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    async beneficiaries(request: CompanyGraphBeneficiariesQuery): Promise<CompanyGraphBeneficiariesResult> {
-        try {
-            var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<CompanyGraphBeneficiariesResult>(`api/CompanyQuery/Graph/Beneficiaries?${params}`, 'get');
+            let response = await this.execute<ViewCompanyQueryResult>(`api/CompanyQuery?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -155,7 +140,7 @@ class PlianceClient implements IPlianceClient {
     async feed(request: FeedQuery): Promise<FeedQueryResult> {
         try {
             var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<FeedQueryResult>(`api/FeedQuery/?${params}`, 'get');
+            let response = await this.execute<FeedQueryResult>(`api/FeedQuery?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -179,7 +164,7 @@ class PlianceClient implements IPlianceClient {
     async viewPerson(request: ViewPersonQuery): Promise<ViewPersonQueryResult> {
         try {
             var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<ViewPersonQueryResult>(`api/PersonQuery/?${params}`, 'get');
+            let response = await this.execute<ViewPersonQueryResult>(`api/PersonQuery?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -191,7 +176,7 @@ class PlianceClient implements IPlianceClient {
     async ping(request: PingQuery): Promise<PingResponse> {
         try {
             var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<PingResponse>(`api/Ping/?${params}`, 'get');
+            let response = await this.execute<PingResponse>(`api/Ping?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -203,7 +188,7 @@ class PlianceClient implements IPlianceClient {
     async getReport(request: ReportQuery): Promise<ReportQueryResult> {
         try {
             var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<ReportQueryResult>(`api/ReportQuery/?${params}`, 'get');
+            let response = await this.execute<ReportQueryResult>(`api/ReportQuery?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -215,7 +200,7 @@ class PlianceClient implements IPlianceClient {
     async watchlistPerson(request: WatchlistQuery): Promise<WatchlistQueryResult> {
         try {
             var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<WatchlistQueryResult>(`api/WatchlistQuery/?${params}`, 'get');
+            let response = await this.execute<WatchlistQueryResult>(`api/WatchlistQuery?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -224,10 +209,10 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    async watchlistPersonV2(request: WatchlistQuery_v2): Promise<WatchlistQueryResult_v2> {
+    async watchlistPersonV2(request: WatchlistQueryV2): Promise<WatchlistQueryResultV2> {
         try {
             var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<WatchlistQueryResult_v2>(`api/WatchlistQuery/v2?${params}`, 'get');
+            let response = await this.execute<WatchlistQueryResultV2>(`api/WatchlistQuery/v2?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -251,7 +236,7 @@ class PlianceClient implements IPlianceClient {
     async getWebhook(request: WebhookQuery): Promise<WebhookQueryResult> {
         try {
             var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<WebhookQueryResult>(`api/WebhookQuery/?${params}`, 'get');
+            let response = await this.execute<WebhookQueryResult>(`api/WebhookQuery?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -262,7 +247,7 @@ class PlianceClient implements IPlianceClient {
 
     async registerCompany(command: RegisterCompanyCommand): Promise<RegisterCompanyResponse> {
         try {
-            let response = await this.execute<RegisterCompanyResponse>(`api/CompanyCommand/`, 'put', command);
+            let response = await this.execute<RegisterCompanyResponse>(`api/CompanyCommand`, 'put', command);
             return response;
         }
         catch (e) {
@@ -296,7 +281,7 @@ class PlianceClient implements IPlianceClient {
     async deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse> {
         try {
             var params = qs.stringify(command, { allowDots: true });
-            let response = await this.execute<DeleteCompanyResponse>(`api/CompanyCommand/?${params}`, 'delete');
+            let response = await this.execute<DeleteCompanyResponse>(`api/CompanyCommand?${params}`, 'delete');
             return response;
         }
         catch (e) {
@@ -318,7 +303,7 @@ class PlianceClient implements IPlianceClient {
 
     async registerPerson(command: RegisterPersonCommand): Promise<RegisterPersonResponse> {
         try {
-            let response = await this.execute<RegisterPersonResponse>(`api/PersonCommand/`, 'put', command);
+            let response = await this.execute<RegisterPersonResponse>(`api/PersonCommand`, 'put', command);
             return response;
         }
         catch (e) {
@@ -352,7 +337,7 @@ class PlianceClient implements IPlianceClient {
     async deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse> {
         try {
             var params = qs.stringify(command, { allowDots: true });
-            let response = await this.execute<DeletePersonResponse>(`api/PersonCommand/?${params}`, 'delete');
+            let response = await this.execute<DeletePersonResponse>(`api/PersonCommand?${params}`, 'delete');
             return response;
         }
         catch (e) {
@@ -374,7 +359,7 @@ class PlianceClient implements IPlianceClient {
 
     async saveWebhook(command: WebhookUpdateCommand): Promise<WebhookUpdateResponse> {
         try {
-            let response = await this.execute<WebhookUpdateResponse>(`api/WebhookCommand/`, 'put', command);
+            let response = await this.execute<WebhookUpdateResponse>(`api/WebhookCommand`, 'put', command);
             return response;
         }
         catch (e) {

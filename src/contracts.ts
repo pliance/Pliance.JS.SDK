@@ -70,13 +70,6 @@ export interface ClassifyPersonHitCommand {
 export interface ClassifyPersonHitResponse extends Response {
 }
 
-export interface CompanyGraphBeneficiariesQuery {
-    companyReferenceId: string;
-}
-
-export interface CompanyGraphBeneficiariesResult extends ResponseGeneric<Graph> {
-}
-
 export interface CompanyHit {
     aliasId: string;
     classification: ClassificationType;
@@ -84,6 +77,7 @@ export interface CompanyHit {
     matchedName: TextMatch[];
     matchId: string;
     name: string;
+    score: number;
 }
 
 export interface CompanyIdentity {
@@ -169,11 +163,6 @@ export enum Gender {
     Female = "Female",
 }
 
-export interface Graph {
-    links: Link[];
-    nodes: Node[];
-}
-
 export interface LastChanged {
     checkpoint: string;
     timestampUtc: Date;
@@ -182,12 +171,6 @@ export interface LastChanged {
 export interface LegalPerson {
     hits: any;
     name: string;
-}
-
-export interface Link {
-    source: number;
-    target: number;
-    type: string;
 }
 
 export interface ListAddress {
@@ -216,8 +199,8 @@ export interface ListCompanyNameViewModel {
 }
 
 export interface ListCompanyViewModel {
-    companyReferenceId: string;
     isSanction: boolean;
+    listId: string;
     names: ListCompanyNameViewModel[];
     sanctionLists: string[];
 }
@@ -231,9 +214,11 @@ export interface ListPersonNameViewModel {
 }
 
 export interface ListPersonViewModel {
+    active: boolean;
     addresses: ListAddress[];
     birthdates: ListBirthdate[];
     countries: string[];
+    deceased: boolean;
     gender: Gender;
     images: string[];
     isPep: boolean;
@@ -269,14 +254,6 @@ export interface ListRole {
     toYear: string;
 }
 
-export interface Node {
-    id: number;
-    isPep: boolean;
-    name: string;
-    reference: string;
-    type: string;
-}
-
 export enum Order {
     Any = "Any",
     Strict = "Strict",
@@ -288,7 +265,7 @@ export interface Page {
     size?: number;
 }
 
-export interface PersonHit {
+export interface PersonDetailsHitModel {
     aliasId: string;
     classification: ClassificationType;
     firstName: string;
@@ -299,6 +276,8 @@ export interface PersonHit {
     matchedFirstName: TextMatch[];
     matchedLastName: TextMatch[];
     matchId: string;
+    referenceId: string;
+    score: number;
 }
 
 export interface PersonIdentity {
@@ -373,10 +352,11 @@ export interface RegisterPersonOptions {
     fuzziness: Fuzziness;
     omitResult: boolean;
     order: Order;
+    pepCountries: string[];
 }
 
 export interface RegisterPersonResponse extends ResponseGeneric<ViewPersonResponseData> {
-    hits: PersonHit[][];
+    hits: PersonDetailsHitModel[][];
 }
 
 export interface ReportQuery {
@@ -422,12 +402,16 @@ export interface ViewCompanyResponseData {
     archived: boolean;
     beneficiaries: ViewPersonResponseData[];
     companyReferenceId: string;
+    corporateForm: string;
+    description: string;
     highRiskCountry: boolean;
     hits: CompanyHit[][];
     identity: CompanyIdentity;
     isSanction: boolean;
     lastChanged: LastChanged;
     name: string;
+    registrationDate?: Date;
+    representatives: ViewPersonResponseData[];
 }
 
 export interface ViewPersonQuery {
@@ -446,7 +430,7 @@ export interface ViewPersonResponseData {
     firstName: string;
     gender: Gender;
     highRiskCountry: boolean;
-    hits: PersonHit[][];
+    hits: PersonDetailsHitModel[][];
     identity: PersonIdentity;
     isPep: boolean;
     isRca: boolean;
@@ -470,15 +454,15 @@ export interface WatchlistQuery {
     lastName: string;
 }
 
-export interface WatchlistQuery_v2 {
-    matchId: string;
-    personReferenceId: string;
-}
-
 export interface WatchlistQueryResult extends ResponseGeneric<ListPersonViewModel> {
 }
 
-export interface WatchlistQueryResult_v2 extends ResponseGeneric<ListPersonViewModel> {
+export interface WatchlistQueryResultV2 extends ResponseGeneric<ListPersonViewModel> {
+}
+
+export interface WatchlistQueryV2 {
+    matchId: string;
+    personReferenceId: string;
 }
 
 export interface WebhookQuery {
