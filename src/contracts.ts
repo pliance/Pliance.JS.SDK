@@ -40,14 +40,14 @@ export interface Birthdate {
 }
 
 export enum BirthMatchType {
-    Date = "Date",
-    Range = "Range",
+    Date = 'Date',
+    Range = 'Range',
 }
 
 export enum ClassificationType {
-    Unknown = "Unknown",
-    FalsePositive = "FalsePositive",
-    Match = "Match",
+    Unknown = 'Unknown',
+    FalsePositive = 'FalsePositive',
+    Match = 'Match',
 }
 
 export interface ClassifyCompanyHitCommand {
@@ -152,15 +152,14 @@ export interface Filter {
 }
 
 export enum Fuzziness {
-    Metaphone = "Metaphone",
-    Simple = "Simple",
-    Diacritics = "Diacritics",
+    Metaphone = 'Metaphone',
+    Simple = 'Simple',
 }
 
 export enum Gender {
-    Unknown = "Unknown",
-    Male = "Male",
-    Female = "Female",
+    Unknown = 'Unknown',
+    Male = 'Male',
+    Female = 'Female',
 }
 
 export interface LastChanged {
@@ -255,9 +254,9 @@ export interface ListRole {
 }
 
 export enum Order {
-    Any = "Any",
-    Strict = "Strict",
-    Exact = "Exact",
+    Any = 'Any',
+    Strict = 'Strict',
+    Exact = 'Exact',
 }
 
 export interface Page {
@@ -368,8 +367,8 @@ export interface ReportQueryResult extends Response {
 }
 
 export enum ResponseStatus {
-    Success = "Success",
-    Error = "Error",
+    Success = 'Success',
+    Error = 'Error',
 }
 
 export interface TextMatch {

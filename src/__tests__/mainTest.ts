@@ -63,7 +63,7 @@ async function archivePerson(client: IPlianceClient, id: string): Promise<Archiv
 
 async function createCompany(client: IPlianceClient, id: string): Promise<RegisterCompanyResponse> {
     let command = <RegisterCompanyCommand>{
-        name: '	Korea Daesong Bank',
+        name: 'Korea Daesong Bank',
         companyReferenceId: id,
     };
 
@@ -183,7 +183,6 @@ test('Search person', async () => {
 test('Classify person', async () => {
     let client = createClient();
     let id = random();
-
     let person = await createPerson(client, id);
     let match = person.data.hits[0][0];
     let command = <ClassifyPersonHitCommand>{

@@ -90,7 +90,7 @@ export class ClientFactory {
 
     public async execute<T>(endpoint: string, method: string, givenName: string, subject: string, data?: any): Promise<T> {
         let jwt = new JWTFactory();
-        var headers = new Headers();
+        let headers = new Headers();
         headers.append('Authorization', 'Bearer ' + jwt.generateJWT(this.secret, this.issuer, givenName, subject));
         headers.append('Content-Type', 'application/json');
 
