@@ -33,15 +33,15 @@ export interface ArchivePersonCommand {
 export interface ArchivePersonResponse extends Response {
 }
 
+export enum BirthMatchType {
+    Date = 'Date',
+    Range = 'Range',
+}
+
 export interface Birthdate {
     day?: number;
     month?: number;
     year?: number;
-}
-
-export enum BirthMatchType {
-    Date = 'Date',
-    Range = 'Range',
 }
 
 export enum ClassificationType {
@@ -70,12 +70,16 @@ export interface ClassifyPersonHitCommand {
 export interface ClassifyPersonHitResponse extends Response {
 }
 
+export interface CompanyFilter {
+    isSanction?: boolean;
+}
+
 export interface CompanyHit {
     aliasId: string;
     classification: ClassificationType;
     isSanction: boolean;
-    matchedName: TextMatch[];
     matchId: string;
+    matchedName: TextMatch[];
     name: string;
     score: number;
 }
@@ -85,8 +89,30 @@ export interface CompanyIdentity {
     identity: string;
 }
 
+export interface CompanyReportPost {
+    activity: string;
+    companyReferenceId: string;
+    date: Date;
+    details: string;
+    identity: string;
+    name: string;
+}
+
+export interface CompanyReportQuery {
+    companyReferenceId: string;
+    from?: Date;
+    to?: Date;
+}
+
+export interface CompanyReportQueryResult extends ResponseGeneric<CompanyReportQueryResultData> {
+}
+
+export interface CompanyReportQueryResultData {
+    result: CompanyReportPost[];
+}
+
 export interface CompanySearchQuery {
-    filter: Filter;
+    filter: CompanyFilter;
     page: Page;
     query: string;
 }
@@ -154,6 +180,7 @@ export interface Filter {
 export enum Fuzziness {
     Metaphone = 'Metaphone',
     Simple = 'Simple',
+    Metaphone3 = 'Metaphone3',
 }
 
 export enum Gender {
@@ -162,14 +189,21 @@ export enum Gender {
     Female = 'Female',
 }
 
+export interface GeneralReportQuery {
+    from?: Date;
+    to?: Date;
+}
+
+export interface GeneralReportQueryResult extends ResponseGeneric<GeneralReportQueryResultData> {
+}
+
+export interface GeneralReportQueryResultData {
+    result: ReportPost[];
+}
+
 export interface LastChanged {
     checkpoint: string;
     timestampUtc: Date;
-}
-
-export interface LegalPerson {
-    hits: any;
-    name: string;
 }
 
 export interface ListAddress {
@@ -272,9 +306,9 @@ export interface PersonDetailsHitModel {
     isRca: boolean;
     isSanction: boolean;
     lastName: string;
+    matchId: string;
     matchedFirstName: TextMatch[];
     matchedLastName: TextMatch[];
-    matchId: string;
     referenceId: string;
     score: number;
 }
@@ -284,10 +318,26 @@ export interface PersonIdentity {
     identity: string;
 }
 
-export interface PersonReport {
-    country: string;
-    legalPersons: LegalPerson[];
-    persons: any;
+export interface PersonReportPost {
+    activity: string;
+    date: Date;
+    details: string;
+    identity: string;
+    name: string;
+    personReferenceId: string;
+}
+
+export interface PersonReportQuery {
+    from?: Date;
+    personReferenceId: string;
+    to?: Date;
+}
+
+export interface PersonReportQueryResult extends ResponseGeneric<PersonReportQueryResultData> {
+}
+
+export interface PersonReportQueryResultData {
+    result: PersonReportPost[];
 }
 
 export interface PersonSearchQuery {
@@ -330,6 +380,7 @@ export interface RegisterCompanyCommand {
 export interface RegisterCompanyOptions {
     fuzziness: Fuzziness;
     omitResult: boolean;
+    omitUbo: boolean;
     order: Order;
 }
 
@@ -358,12 +409,12 @@ export interface RegisterPersonResponse extends ResponseGeneric<ViewPersonRespon
     hits: PersonDetailsHitModel[][];
 }
 
-export interface ReportQuery {
-}
-
-export interface ReportQueryResult extends Response {
-    highRiskCountries: string[];
-    personReports: PersonReport[];
+export interface ReportPost {
+    activity: string;
+    date: Date;
+    details: string;
+    identity: string;
+    name: string;
 }
 
 export enum ResponseStatus {

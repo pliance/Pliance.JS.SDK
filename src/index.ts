@@ -20,8 +20,12 @@ import {
     DeletePersonCommand,
     FeedQueryResult,
     FeedQuery,
-    ReportQueryResult,
-    ReportQuery,
+    CompanyReportQueryResult,
+    CompanyReportQuery,
+    GeneralReportQueryResult,
+    GeneralReportQuery,
+    PersonReportQueryResult,
+    PersonReportQuery,
     WebhookQueryResult,
     WebhookQuery,
     PingResponse,
@@ -62,7 +66,9 @@ export interface IPlianceClient {
     deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
     deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse>;
     feed(request: FeedQuery): Promise<FeedQueryResult>;
-    getReport(request: ReportQuery): Promise<ReportQueryResult>;
+    getCompanyReport(request: CompanyReportQuery): Promise<CompanyReportQueryResult>;
+    getGeneralReport(request: GeneralReportQuery): Promise<GeneralReportQueryResult>;
+    getPersonReport(request: PersonReportQuery): Promise<PersonReportQueryResult>;
     getWebhook(request: WebhookQuery): Promise<WebhookQueryResult>;
     ping(request: PingQuery): Promise<PingResponse>;
     registerCompany(command: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
@@ -185,10 +191,34 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
-    async getReport(request: ReportQuery): Promise<ReportQueryResult> {
+    async getPersonReport(request: PersonReportQuery): Promise<PersonReportQueryResult> {
         try {
             var params = qs.stringify(request, { allowDots: true });
-            let response = await this.execute<ReportQueryResult>(`api/ReportQuery?${params}`, 'get');
+            let response = await this.execute<PersonReportQueryResult>(`api/ReportQuery/PersonReport?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async getGeneralReport(request: GeneralReportQuery): Promise<GeneralReportQueryResult> {
+        try {
+            var params = qs.stringify(request, { allowDots: true });
+            let response = await this.execute<GeneralReportQueryResult>(`api/ReportQuery/GeneralReport?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async getCompanyReport(request: CompanyReportQuery): Promise<CompanyReportQueryResult> {
+        try {
+            var params = qs.stringify(request, { allowDots: true });
+            let response = await this.execute<CompanyReportQueryResult>(`api/ReportQuery/CompanyReport?${params}`, 'get');
             return response;
         }
         catch (e) {
