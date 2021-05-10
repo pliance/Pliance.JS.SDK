@@ -1,7 +1,5 @@
 **/node_modules/**
 /lib
-/client.pfx
-*.pfx
 package-lock.json
 .git
 Dockerfile

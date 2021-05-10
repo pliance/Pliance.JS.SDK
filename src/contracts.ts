@@ -33,21 +33,21 @@ export interface ArchivePersonCommand {
 export interface ArchivePersonResponse extends Response {
 }
 
+export enum BirthMatchType {
+    Date = 'Date',
+    Range = 'Range',
+}
+
 export interface Birthdate {
     day?: number;
     month?: number;
     year?: number;
 }
 
-export enum BirthMatchType {
-    Date = "Date",
-    Range = "Range",
-}
-
 export enum ClassificationType {
-    Unknown = "Unknown",
-    FalsePositive = "FalsePositive",
-    Match = "Match",
+    Unknown = 'Unknown',
+    FalsePositive = 'FalsePositive',
+    Match = 'Match',
 }
 
 export interface ClassifyCompanyHitCommand {
@@ -70,20 +70,18 @@ export interface ClassifyPersonHitCommand {
 export interface ClassifyPersonHitResponse extends Response {
 }
 
-export interface CompanyGraphBeneficiariesQuery {
-    companyReferenceId: string;
-}
-
-export interface CompanyGraphBeneficiariesResult extends ResponseGeneric<Graph> {
+export interface CompanyFilter {
+    isSanction?: boolean;
 }
 
 export interface CompanyHit {
     aliasId: string;
     classification: ClassificationType;
     isSanction: boolean;
-    matchedName: TextMatch[];
     matchId: string;
+    matchedName: TextMatch[];
     name: string;
+    score: number;
 }
 
 export interface CompanyIdentity {
@@ -91,8 +89,30 @@ export interface CompanyIdentity {
     identity: string;
 }
 
+export interface CompanyReportPost {
+    activity: string;
+    companyReferenceId: string;
+    date: Date;
+    details: string;
+    identity: string;
+    name: string;
+}
+
+export interface CompanyReportQuery {
+    companyReferenceId: string;
+    from?: Date;
+    to?: Date;
+}
+
+export interface CompanyReportQueryResult extends ResponseGeneric<CompanyReportQueryResultData> {
+}
+
+export interface CompanyReportQueryResultData {
+    result: CompanyReportPost[];
+}
+
 export interface CompanySearchQuery {
-    filter: Filter;
+    filter: CompanyFilter;
     page: Page;
     query: string;
 }
@@ -158,36 +178,32 @@ export interface Filter {
 }
 
 export enum Fuzziness {
-    Metaphone = "Metaphone",
-    Simple = "Simple",
-    Diacritics = "Diacritics",
+    Metaphone = 'Metaphone',
+    Simple = 'Simple',
+    Metaphone3 = 'Metaphone3',
 }
 
 export enum Gender {
-    Unknown = "Unknown",
-    Male = "Male",
-    Female = "Female",
+    Unknown = 'Unknown',
+    Male = 'Male',
+    Female = 'Female',
 }
 
-export interface Graph {
-    links: Link[];
-    nodes: Node[];
+export interface GeneralReportQuery {
+    from?: Date;
+    to?: Date;
+}
+
+export interface GeneralReportQueryResult extends ResponseGeneric<GeneralReportQueryResultData> {
+}
+
+export interface GeneralReportQueryResultData {
+    result: ReportPost[];
 }
 
 export interface LastChanged {
     checkpoint: string;
     timestampUtc: Date;
-}
-
-export interface LegalPerson {
-    hits: any;
-    name: string;
-}
-
-export interface Link {
-    source: number;
-    target: number;
-    type: string;
 }
 
 export interface ListAddress {
@@ -216,8 +232,8 @@ export interface ListCompanyNameViewModel {
 }
 
 export interface ListCompanyViewModel {
-    companyReferenceId: string;
     isSanction: boolean;
+    listId: string;
     names: ListCompanyNameViewModel[];
     sanctionLists: string[];
 }
@@ -231,9 +247,11 @@ export interface ListPersonNameViewModel {
 }
 
 export interface ListPersonViewModel {
+    active: boolean;
     addresses: ListAddress[];
     birthdates: ListBirthdate[];
     countries: string[];
+    deceased: boolean;
     gender: Gender;
     images: string[];
     isPep: boolean;
@@ -269,18 +287,10 @@ export interface ListRole {
     toYear: string;
 }
 
-export interface Node {
-    id: number;
-    isPep: boolean;
-    name: string;
-    reference: string;
-    type: string;
-}
-
 export enum Order {
-    Any = "Any",
-    Strict = "Strict",
-    Exact = "Exact",
+    Any = 'Any',
+    Strict = 'Strict',
+    Exact = 'Exact',
 }
 
 export interface Page {
@@ -288,7 +298,7 @@ export interface Page {
     size?: number;
 }
 
-export interface PersonHit {
+export interface PersonDetailsHitModel {
     aliasId: string;
     classification: ClassificationType;
     firstName: string;
@@ -296,9 +306,11 @@ export interface PersonHit {
     isRca: boolean;
     isSanction: boolean;
     lastName: string;
+    matchId: string;
     matchedFirstName: TextMatch[];
     matchedLastName: TextMatch[];
-    matchId: string;
+    referenceId: string;
+    score: number;
 }
 
 export interface PersonIdentity {
@@ -306,10 +318,26 @@ export interface PersonIdentity {
     identity: string;
 }
 
-export interface PersonReport {
-    country: string;
-    legalPersons: LegalPerson[];
-    persons: any;
+export interface PersonReportPost {
+    activity: string;
+    date: Date;
+    details: string;
+    identity: string;
+    name: string;
+    personReferenceId: string;
+}
+
+export interface PersonReportQuery {
+    from?: Date;
+    personReferenceId: string;
+    to?: Date;
+}
+
+export interface PersonReportQueryResult extends ResponseGeneric<PersonReportQueryResultData> {
+}
+
+export interface PersonReportQueryResultData {
+    result: PersonReportPost[];
 }
 
 export interface PersonSearchQuery {
@@ -352,6 +380,7 @@ export interface RegisterCompanyCommand {
 export interface RegisterCompanyOptions {
     fuzziness: Fuzziness;
     omitResult: boolean;
+    omitUbo: boolean;
     order: Order;
 }
 
@@ -373,23 +402,24 @@ export interface RegisterPersonOptions {
     fuzziness: Fuzziness;
     omitResult: boolean;
     order: Order;
+    pepCountries: string[];
 }
 
 export interface RegisterPersonResponse extends ResponseGeneric<ViewPersonResponseData> {
-    hits: PersonHit[][];
+    hits: PersonDetailsHitModel[][];
 }
 
-export interface ReportQuery {
-}
-
-export interface ReportQueryResult extends Response {
-    highRiskCountries: string[];
-    personReports: PersonReport[];
+export interface ReportPost {
+    activity: string;
+    date: Date;
+    details: string;
+    identity: string;
+    name: string;
 }
 
 export enum ResponseStatus {
-    Success = "Success",
-    Error = "Error",
+    Success = 'Success',
+    Error = 'Error',
 }
 
 export interface TextMatch {
@@ -422,12 +452,16 @@ export interface ViewCompanyResponseData {
     archived: boolean;
     beneficiaries: ViewPersonResponseData[];
     companyReferenceId: string;
+    corporateForm: string;
+    description: string;
     highRiskCountry: boolean;
     hits: CompanyHit[][];
     identity: CompanyIdentity;
     isSanction: boolean;
     lastChanged: LastChanged;
     name: string;
+    registrationDate?: Date;
+    representatives: ViewPersonResponseData[];
 }
 
 export interface ViewPersonQuery {
@@ -446,7 +480,7 @@ export interface ViewPersonResponseData {
     firstName: string;
     gender: Gender;
     highRiskCountry: boolean;
-    hits: PersonHit[][];
+    hits: PersonDetailsHitModel[][];
     identity: PersonIdentity;
     isPep: boolean;
     isRca: boolean;
@@ -470,15 +504,15 @@ export interface WatchlistQuery {
     lastName: string;
 }
 
-export interface WatchlistQuery_v2 {
-    matchId: string;
-    personReferenceId: string;
-}
-
 export interface WatchlistQueryResult extends ResponseGeneric<ListPersonViewModel> {
 }
 
-export interface WatchlistQueryResult_v2 extends ResponseGeneric<ListPersonViewModel> {
+export interface WatchlistQueryResultV2 extends ResponseGeneric<ListPersonViewModel> {
+}
+
+export interface WatchlistQueryV2 {
+    matchId: string;
+    personReferenceId: string;
 }
 
 export interface WebhookQuery {
