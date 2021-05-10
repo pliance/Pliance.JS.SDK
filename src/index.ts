@@ -121,7 +121,7 @@ class PlianceClient implements IPlianceClient {
     // @inject: methods
     async searchCompany(request: CompanySearchQuery): Promise<CompanySearchQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<CompanySearchQueryResult>(`api/CompanyQuery/Search?${params}`, 'get');
             return response;
         }
@@ -133,7 +133,7 @@ class PlianceClient implements IPlianceClient {
 
     async viewCompany(request: ViewCompanyQuery): Promise<ViewCompanyQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<ViewCompanyQueryResult>(`api/CompanyQuery?${params}`, 'get');
             return response;
         }
@@ -145,7 +145,7 @@ class PlianceClient implements IPlianceClient {
 
     async feed(request: FeedQuery): Promise<FeedQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<FeedQueryResult>(`api/FeedQuery?${params}`, 'get');
             return response;
         }
@@ -157,7 +157,7 @@ class PlianceClient implements IPlianceClient {
 
     async searchPerson(request: PersonSearchQuery): Promise<PersonSearchQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<PersonSearchQueryResult>(`api/PersonQuery/Search?${params}`, 'get');
             return response;
         }
@@ -169,7 +169,7 @@ class PlianceClient implements IPlianceClient {
 
     async viewPerson(request: ViewPersonQuery): Promise<ViewPersonQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<ViewPersonQueryResult>(`api/PersonQuery?${params}`, 'get');
             return response;
         }
@@ -181,7 +181,7 @@ class PlianceClient implements IPlianceClient {
 
     async ping(request: PingQuery): Promise<PingResponse> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<PingResponse>(`api/Ping?${params}`, 'get');
             return response;
         }
@@ -193,7 +193,7 @@ class PlianceClient implements IPlianceClient {
 
     async getPersonReport(request: PersonReportQuery): Promise<PersonReportQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<PersonReportQueryResult>(`api/ReportQuery/PersonReport?${params}`, 'get');
             return response;
         }
@@ -205,7 +205,7 @@ class PlianceClient implements IPlianceClient {
 
     async getGeneralReport(request: GeneralReportQuery): Promise<GeneralReportQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<GeneralReportQueryResult>(`api/ReportQuery/GeneralReport?${params}`, 'get');
             return response;
         }
@@ -217,7 +217,7 @@ class PlianceClient implements IPlianceClient {
 
     async getCompanyReport(request: CompanyReportQuery): Promise<CompanyReportQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<CompanyReportQueryResult>(`api/ReportQuery/CompanyReport?${params}`, 'get');
             return response;
         }
@@ -229,7 +229,7 @@ class PlianceClient implements IPlianceClient {
 
     async watchlistPerson(request: WatchlistQuery): Promise<WatchlistQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<WatchlistQueryResult>(`api/WatchlistQuery?${params}`, 'get');
             return response;
         }
@@ -241,7 +241,7 @@ class PlianceClient implements IPlianceClient {
 
     async watchlistPersonV2(request: WatchlistQueryV2): Promise<WatchlistQueryResultV2> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<WatchlistQueryResultV2>(`api/WatchlistQuery/v2?${params}`, 'get');
             return response;
         }
@@ -253,7 +253,7 @@ class PlianceClient implements IPlianceClient {
 
     async watchlistCompany(request: WatchlistCompanyQuery): Promise<WatchlistCompanyQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<WatchlistCompanyQueryResult>(`api/WatchlistQuery/Company?${params}`, 'get');
             return response;
         }
@@ -265,7 +265,7 @@ class PlianceClient implements IPlianceClient {
 
     async getWebhook(request: WebhookQuery): Promise<WebhookQueryResult> {
         try {
-            var params = qs.stringify(request, { allowDots: true });
+            let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<WebhookQueryResult>(`api/WebhookQuery?${params}`, 'get');
             return response;
         }
@@ -310,7 +310,7 @@ class PlianceClient implements IPlianceClient {
 
     async deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse> {
         try {
-            var params = qs.stringify(command, { allowDots: true });
+            let params = qs.stringify(command, { allowDots: true });
             let response = await this.execute<DeleteCompanyResponse>(`api/CompanyCommand?${params}`, 'delete');
             return response;
         }
@@ -366,7 +366,7 @@ class PlianceClient implements IPlianceClient {
 
     async deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse> {
         try {
-            var params = qs.stringify(command, { allowDots: true });
+            let params = qs.stringify(command, { allowDots: true });
             let response = await this.execute<DeletePersonResponse>(`api/PersonCommand?${params}`, 'delete');
             return response;
         }
