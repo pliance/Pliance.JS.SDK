@@ -28,6 +28,8 @@ import {
     PersonReportQuery,
     WebhookQueryResult,
     WebhookQuery,
+    ViewCompanyOwnershipQueryResult,
+    ViewCompanyOwnershipQuery,
     PingResponse,
     PingQuery,
     RegisterCompanyResponse,
@@ -70,6 +72,7 @@ export interface IPlianceClient {
     getGeneralReport(request: GeneralReportQuery): Promise<GeneralReportQueryResult>;
     getPersonReport(request: PersonReportQuery): Promise<PersonReportQueryResult>;
     getWebhook(request: WebhookQuery): Promise<WebhookQueryResult>;
+    ownership(request: ViewCompanyOwnershipQuery): Promise<ViewCompanyOwnershipQueryResult>;
     ping(request: PingQuery): Promise<PingResponse>;
     registerCompany(command: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
     registerPerson(command: RegisterPersonCommand): Promise<RegisterPersonResponse>;
@@ -135,6 +138,18 @@ class PlianceClient implements IPlianceClient {
         try {
             let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<ViewCompanyQueryResult>(`api/CompanyQuery?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async ownership(request: ViewCompanyOwnershipQuery): Promise<ViewCompanyOwnershipQueryResult> {
+        try {
+            let params = qs.stringify(request, { allowDots: true });
+            let response = await this.execute<ViewCompanyOwnershipQueryResult>(`api/CompanyQuery/Ownership?${params}`, 'get');
             return response;
         }
         catch (e) {
