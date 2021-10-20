@@ -14,6 +14,8 @@ import {
     ClassifyCompanyHitCommand,
     ClassifyPersonHitResponse,
     ClassifyPersonHitCommand,
+    ViewCompanyDataQueryResult,
+    ViewCompanyDataQuery,
     DeleteCompanyResponse,
     DeleteCompanyCommand,
     DeletePersonResponse,
@@ -30,6 +32,8 @@ import {
     WebhookQuery,
     PingResponse,
     PingQuery,
+    WebhookPokeQueryResult,
+    WebhookPokeQuery,
     RegisterCompanyResponse,
     RegisterCompanyCommand,
     RegisterPersonResponse,
@@ -63,6 +67,7 @@ export interface IPlianceClient {
     archivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse>;
     classifyCompanyHit(command: ClassifyCompanyHitCommand): Promise<ClassifyCompanyHitResponse>;
     classifyPersonHit(command: ClassifyPersonHitCommand): Promise<ClassifyPersonHitResponse>;
+    companyData(request: ViewCompanyDataQuery): Promise<ViewCompanyDataQueryResult>;
     deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
     deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse>;
     feed(request: FeedQuery): Promise<FeedQueryResult>;
@@ -71,6 +76,7 @@ export interface IPlianceClient {
     getPersonReport(request: PersonReportQuery): Promise<PersonReportQueryResult>;
     getWebhook(request: WebhookQuery): Promise<WebhookQueryResult>;
     ping(request: PingQuery): Promise<PingResponse>;
+    poke(query: WebhookPokeQuery): Promise<WebhookPokeQueryResult>;
     registerCompany(command: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
     registerPerson(command: RegisterPersonCommand): Promise<RegisterPersonResponse>;
     saveWebhook(command: WebhookUpdateCommand): Promise<WebhookUpdateResponse>;
@@ -135,6 +141,18 @@ class PlianceClient implements IPlianceClient {
         try {
             let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<ViewCompanyQueryResult>(`api/CompanyQuery?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async companyData(request: ViewCompanyDataQuery): Promise<ViewCompanyDataQueryResult> {
+        try {
+            let params = qs.stringify(request, { allowDots: true });
+            let response = await this.execute<ViewCompanyDataQueryResult>(`api/CompanyQuery/CompanyData?${params}`, 'get');
             return response;
         }
         catch (e) {
@@ -267,6 +285,17 @@ class PlianceClient implements IPlianceClient {
         try {
             let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<WebhookQueryResult>(`api/WebhookQuery?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async poke(query: WebhookPokeQuery): Promise<WebhookPokeQueryResult> {
+        try {
+            let response = await this.execute<WebhookPokeQueryResult>(`api/WebhookQuery/Poke`, 'post', query);
             return response;
         }
         catch (e) {
