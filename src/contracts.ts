@@ -15,12 +15,12 @@ export enum ActivityType {
 }
 
 export interface Address {
-    city: string;
-    country: string;
-    postalCode: string;
-    street1: string;
-    street2: string;
-    streetNo: string;
+    city?: string;
+    country?: string;
+    postalCode?: string;
+    street1?: string;
+    street2?: string;
+    streetNo?: string;
 }
 
 export interface ArchiveCompanyCommand {
@@ -74,9 +74,17 @@ export interface ClassifyPersonHitCommand {
 export interface ClassifyPersonHitResponse extends Response {
 }
 
-export interface Company {
-    identity: string;
-    name: string;
+export interface CompanyData {
+    address?: string;
+    city?: string;
+    country?: string;
+    description?: string;
+    name?: string;
+    owners?: Owners;
+    parentCompanyName?: string;
+    registrationDate?: Date;
+    ultimateParentCompany?: UltimateCompany;
+    zipCode?: string;
 }
 
 export interface CompanyFilter {
@@ -84,47 +92,39 @@ export interface CompanyFilter {
 }
 
 export interface CompanyHit {
-    aliasId: string;
-    classification: ClassificationType;
-    isSanction: boolean;
-    matchId: string;
-    matchedName: TextMatch[];
-    name: string;
-    score: number;
+    aliasId?: string;
+    classification?: ClassificationType;
+    isSanction?: boolean;
+    matchId?: string;
+    matchedName?: TextMatch[];
+    name?: string;
+    score?: number;
 }
 
 export interface CompanyIdentity {
-    country: string;
-    identity: string;
+    country?: string;
+    identity?: string;
 }
 
 export interface CompanyOwner {
-    name: string;
-    organizationNumber: string;
+    name?: string;
+    organizationNumber?: string;
     shares?: number;
-    stake: number;
+    stake?: number;
     votes?: number;
 }
 
-export interface CompanyOwnership {
-    companyOwners: CompanyOwner[];
-    hasForeignUltimateParent: boolean;
-    parentCompany: Company;
-    personOwners: PersonOwner[];
-    ultimateParentCompany: Company;
-}
-
 export interface CompanyReportPost {
-    activity: ActivityType;
-    companyReferenceId: string;
-    date: Date;
-    details: string;
-    identity: string;
-    name: string;
+    activity?: ActivityType;
+    companyReferenceId?: string;
+    date?: Date;
+    details?: string;
+    identity?: string;
+    name?: string;
 }
 
 export interface CompanyReportQuery {
-    companyReferenceId: string;
+    companyReferenceId?: string;
     from?: Date;
     to?: Date;
 }
@@ -133,30 +133,30 @@ export interface CompanyReportQueryResult extends ResponseGeneric<CompanyReportQ
 }
 
 export interface CompanyReportQueryResultData {
-    result: CompanyReportPost[];
+    result?: CompanyReportPost[];
 }
 
 export interface CompanySearchQuery {
-    filter: CompanyFilter;
-    page: Page;
-    query: string;
+    filter?: CompanyFilter;
+    page?: Page;
+    query?: string;
 }
 
 export interface CompanySearchQueryResult extends ResponseGeneric<CompanySearchResponseData> {
 }
 
 export interface CompanySearchResponseData {
-    result: CompanySearchResult[];
+    result?: CompanySearchResult[];
 }
 
 export interface CompanySearchResult {
-    archived: boolean;
-    companyReferenceId: string;
-    identity: CompanyIdentity;
-    isPep: boolean;
-    isRca: boolean;
-    isSanction: boolean;
-    name: TextMatch[];
+    archived?: boolean;
+    companyReferenceId?: string;
+    identity?: CompanyIdentity;
+    isPep?: boolean;
+    isRca?: boolean;
+    isSanction?: boolean;
+    name?: TextMatch[];
 }
 
 export interface DeleteCompanyCommand {
@@ -174,26 +174,26 @@ export interface DeletePersonResponse extends Response {
 }
 
 export interface EngagementModel {
-    name: string;
-    registrationNumber: string;
+    name?: string;
+    registrationNumber?: string;
 }
 
 export interface FeedQuery {
-    from: string;
+    from?: string;
 }
 
 export interface FeedQueryItem {
-    body: any;
-    checkpoint: string;
-    metadata: any;
-    type: string;
+    body?: any;
+    checkpoint?: string;
+    metadata?: any;
+    type?: string;
 }
 
 export interface FeedQueryResult extends ResponseGeneric<FeedQueryResultData> {
 }
 
 export interface FeedQueryResultData {
-    items: FeedQueryItem[];
+    items?: FeedQueryItem[];
 }
 
 export interface Filter {
@@ -223,95 +223,99 @@ export interface GeneralReportQueryResult extends ResponseGeneric<GeneralReportQ
 }
 
 export interface GeneralReportQueryResultData {
-    result: ReportPost[];
+    result?: ReportPost[];
 }
 
 export interface LastChanged {
-    checkpoint: string;
-    timestampUtc: Date;
+    checkpoint?: string;
+    timestampUtc?: Date;
 }
 
 export interface ListAddress {
-    city: string;
-    country: string;
-    postalCode: string;
-    street1: string;
-    street2: string;
-    streetNo: string;
+    city?: string;
+    country?: string;
+    postalCode?: string;
+    street1?: string;
+    street2?: string;
+    streetNo?: string;
 }
 
 export interface ListBirthdate {
-    circa: boolean;
+    circa?: boolean;
     day?: number;
     fromYear?: number;
     month?: number;
     toYear?: number;
-    type: BirthMatchType;
+    type?: BirthMatchType;
     year?: number;
 }
 
 export interface ListCompanyNameViewModel {
-    name: string;
-    selectedName: TextMatch[];
-    type: string;
+    name?: string;
+    selectedName?: TextMatch[];
+    type?: string;
 }
 
 export interface ListCompanyViewModel {
-    isSanction: boolean;
-    listId: string;
-    names: ListCompanyNameViewModel[];
-    sanctionLists: string[];
+    isSanction?: boolean;
+    listId?: string;
+    names?: ListCompanyNameViewModel[];
+    sanctionLists?: string[];
+    watchlistSource?: WatchlistSource;
 }
 
 export interface ListPersonNameViewModel {
-    firstName: string;
-    lastName: string;
-    selectedFirstName: TextMatch[];
-    selectedLastName: TextMatch[];
-    type: string;
+    firstName?: string;
+    lastName?: string;
+    selectedFirstName?: TextMatch[];
+    selectedLastName?: TextMatch[];
+    type?: string;
 }
 
 export interface ListPersonViewModel {
-    active: boolean;
-    addresses: ListAddress[];
-    birthdates: ListBirthdate[];
-    countries: string[];
-    deceased: boolean;
-    gender: Gender;
-    images: string[];
-    isPep: boolean;
-    isRca: boolean;
-    isSanction: boolean;
-    isSip: boolean;
-    listId: string;
-    lists: string[];
-    names: ListPersonNameViewModel[];
-    nationalIdentificationNumber: string;
-    nationalities: string[];
-    relations: ListRelationViewModel[];
-    roles: ListRole[];
+    active?: boolean;
+    addresses?: ListAddress[];
+    birthdates?: ListBirthdate[];
+    countries?: string[];
+    deceased?: boolean;
+    gender?: Gender;
+    images?: string[];
+    isPep?: boolean;
+    isRca?: boolean;
+    isSanction?: boolean;
+    isSip?: boolean;
+    listId?: string;
+    lists?: string[];
+    names?: ListPersonNameViewModel[];
+    nationalIdentificationNumber?: string;
+    nationalities?: string[];
+    notes?: string[];
+    relations?: ListRelationViewModel[];
+    roles?: ListRole[];
+    sources?: string[];
+    watchlistSource?: WatchlistSource;
 }
 
 export interface ListRelationViewModel {
-    firstName: string;
-    isPep: boolean;
-    isRca: boolean;
-    isSanction: boolean;
-    isSip: boolean;
-    lastName: string;
-    relationPersonId: string;
-    relationType: string;
+    firstName?: string;
+    isPep?: boolean;
+    isRca?: boolean;
+    isSanction?: boolean;
+    isSip?: boolean;
+    lastName?: string;
+    relationPersonId?: string;
+    relationType?: string;
 }
 
 export interface ListRole {
-    description: string;
-    isActive: boolean;
-    sinceDay: string;
-    sinceMonth: string;
-    sinceYear: string;
-    toDay: string;
-    toMonth: string;
-    toYear: string;
+    description?: string;
+    isActive?: boolean;
+    sinceDay?: string;
+    sinceMonth?: string;
+    sinceYear?: string;
+    toDay?: string;
+    toMonth?: string;
+    toYear?: string;
 }
 
 export enum Order {
@@ -320,53 +324,58 @@ export enum Order {
     Exact = 'Exact',
 }
 
+export interface Owners {
+    companies?: CompanyOwner[];
+    persons?: PersonOwner[];
+}
+
 export interface Page {
-    no: number;
-    size: number;
+    no?: number;
+    size?: number;
 }
 
 export interface PersonDetailsHitModel {
-    aliasId: string;
-    classification: ClassificationType;
-    firstName: string;
-    isPep: boolean;
-    isRca: boolean;
-    isSanction: boolean;
-    isSip: boolean;
-    lastName: string;
-    matchId: string;
-    matchedFirstName: TextMatch[];
-    matchedLastName: TextMatch[];
-    referenceId: string;
-    score: number;
+    aliasId?: string;
+    classification?: ClassificationType;
+    firstName?: string;
+    isPep?: boolean;
+    isRca?: boolean;
+    isSanction?: boolean;
+    isSip?: boolean;
+    lastName?: string;
+    matchId?: string;
+    matchedFirstName?: TextMatch[];
+    matchedLastName?: TextMatch[];
+    referenceId?: string;
+    score?: number;
 }
 
 export interface PersonIdentity {
-    country: string;
-    identity: string;
+    country?: string;
+    identity?: string;
 }
 
 export interface PersonOwner {
-    firstName: string;
-    lastName: string;
-    nationalIdentityNumber: string;
+    firstName?: string;
+    lastName?: string;
+    nationalIdentityNumber?: string;
     shares?: number;
-    stake: number;
+    stake?: number;
     votes?: number;
 }
 
 export interface PersonReportPost {
-    activity: ActivityType;
-    date: Date;
-    details: string;
-    identity: string;
-    name: string;
-    personReferenceId: string;
+    activity?: ActivityType;
+    date?: Date;
+    details?: string;
+    identity?: string;
+    name?: string;
+    personReferenceId?: string;
 }
 
 export interface PersonReportQuery {
     from?: Date;
-    personReferenceId: string;
+    personReferenceId?: string;
     to?: Date;
 }
 
@@ -374,32 +383,32 @@ export interface PersonReportQueryResult extends ResponseGeneric<PersonReportQue
 }
 
 export interface PersonReportQueryResultData {
-    result: PersonReportPost[];
+    result?: PersonReportPost[];
 }
 
 export interface PersonSearchQuery {
-    filter: Filter;
-    page: Page;
-    query: string;
+    filter?: Filter;
+    page?: Page;
+    query?: string;
 }
 
 export interface PersonSearchQueryResult extends ResponseGeneric<PersonSearchResponseData> {
 }
 
 export interface PersonSearchResponseData {
-    result: PersonSearchResult[];
+    result?: PersonSearchResult[];
 }
 
 export interface PersonSearchResult {
-    archived: boolean;
-    firstName: TextMatch[];
-    identity: PersonIdentity;
-    isPep: boolean;
-    isRca: boolean;
-    isSanction: boolean;
-    isSip: boolean;
-    lastName: TextMatch[];
-    personReferenceId: string;
+    archived?: boolean;
+    firstName?: TextMatch[];
+    identity?: PersonIdentity;
+    isPep?: boolean;
+    isRca?: boolean;
+    isSanction?: boolean;
+    isSip?: boolean;
+    lastName?: TextMatch[];
+    personReferenceId?: string;
 }
 
 export interface PingQuery {
@@ -410,50 +419,50 @@ export interface PingResponse extends Response {
 
 export interface RegisterCompanyCommand {
     companyReferenceId: string;
-    identity: CompanyIdentity;
+    identity?: CompanyIdentity;
     name: string;
-    options: RegisterCompanyOptions;
+    options?: RegisterCompanyOptions;
 }
 
 export interface RegisterCompanyOptions {
-    fuzziness: Fuzziness;
-    omitResult: boolean;
-    omitUltimateBenefitOwner: boolean;
-    order: Order;
-    validateCompany: boolean;
+    fuzziness?: Fuzziness;
+    omitResult?: boolean;
+    omitUltimateBenefitOwner?: boolean;
+    order?: Order;
+    validateCompany?: boolean;
 }
 
 export interface RegisterCompanyResponse extends ResponseGeneric<ViewCompanyResponseData> {
 }
 
 export interface RegisterPersonCommand {
-    addresses: Address[];
-    birthdate: Birthdate;
+    addresses?: Address[];
+    birthdate?: Birthdate;
     firstName: string;
-    gender: string;
-    identity: PersonIdentity;
+    gender?: string;
+    identity?: PersonIdentity;
     lastName: string;
-    options: RegisterPersonOptions;
+    options?: RegisterPersonOptions;
     personReferenceId: string;
 }
 
 export interface RegisterPersonOptions {
-    fuzziness: Fuzziness;
-    omitResult: boolean;
-    order: Order;
-    pepCountries: string[];
+    fuzziness?: Fuzziness;
+    omitResult?: boolean;
+    order?: Order;
+    pepCountries?: string[];
 }
 
 export interface RegisterPersonResponse extends ResponseGeneric<ViewPersonResponseData> {
-    hits: PersonDetailsHitModel[][];
+    hits?: PersonDetailsHitModel[][];
 }
 
 export interface ReportPost {
-    activity: ActivityType;
-    date: Date;
-    details: string;
-    identity: string;
-    name: string;
+    activity?: ActivityType;
+    date?: Date;
+    details?: string;
+    identity?: string;
+    name?: string;
 }
 
 export enum ResponseStatus {
@@ -462,8 +471,14 @@ export enum ResponseStatus {
 }
 
 export interface TextMatch {
-    isMatch: boolean;
-    text: string;
+    isMatch?: boolean;
+    text?: string;
+}
+
+export interface UltimateCompany {
+    identity?: string;
+    isForeign?: boolean;
+    name?: string;
 }
 
 export interface UnarchiveCompanyCommand {
@@ -480,31 +495,31 @@ export interface UnarchivePersonCommand {
 export interface UnarchivePersonResponse extends Response {
 }
 
-export interface ViewCompanyOwnershipQuery {
+export interface ViewCompanyDataQuery {
     identity: string;
 }
 
-export interface ViewCompanyOwnershipQueryResult extends ResponseGeneric<CompanyOwnership> {
+export interface ViewCompanyDataQueryResult extends ResponseGeneric<CompanyData> {
 }
 
 export interface ViewCompanyPersonResponse {
-    addresses: Address[];
-    archived: boolean;
-    birth: Birthdate;
-    birthdate: string;
-    engagements: EngagementModel[];
-    firstName: string;
-    gender: Gender;
-    highRiskCountry: boolean;
-    hits: PersonDetailsHitModel[][];
-    identity: PersonIdentity;
-    isPep: boolean;
-    isRca: boolean;
-    isSanction: boolean;
-    isSip: boolean;
-    lastChanged: LastChanged;
-    lastName: string;
-    personReferenceId: string;
+    addresses?: Address[];
+    archived?: boolean;
+    birth?: Birthdate;
+    birthdate?: string;
+    engagements?: EngagementModel[];
+    firstName?: string;
+    gender?: Gender;
+    highRiskCountry?: boolean;
+    hits?: PersonDetailsHitModel[][];
+    identity?: PersonIdentity;
+    isPep?: boolean;
+    isRca?: boolean;
+    isSanction?: boolean;
+    isSip?: boolean;
+    lastChanged?: LastChanged;
+    lastName?: string;
+    personReferenceId?: string;
 }
 
 export interface ViewCompanyQuery {
@@ -515,19 +530,19 @@ export interface ViewCompanyQueryResult extends ResponseGeneric<ViewCompanyRespo
 }
 
 export interface ViewCompanyResponseData {
-    archived: boolean;
-    beneficiaries: ViewCompanyPersonResponse[];
-    companyReferenceId: string;
-    corporateForm: string;
-    description: string;
-    highRiskCountry: boolean;
-    hits: CompanyHit[][];
-    identity: CompanyIdentity;
-    isSanction: boolean;
-    lastChanged: LastChanged;
-    name: string;
+    archived?: boolean;
+    beneficiaries?: ViewCompanyPersonResponse[];
+    companyReferenceId?: string;
+    corporateForm?: string;
+    description?: string;
+    highRiskCountry?: boolean;
+    hits?: CompanyHit[][];
+    identity?: CompanyIdentity;
+    isSanction?: boolean;
+    lastChanged?: LastChanged;
+    name?: string;
     registrationDate?: Date;
-    representatives: ViewPersonResponseData[];
+    representatives?: ViewPersonResponseData[];
 }
 
 export interface ViewPersonQuery {
@@ -538,22 +553,22 @@ export interface ViewPersonQueryResult extends ResponseGeneric<ViewPersonRespons
 }
 
 export interface ViewPersonResponseData {
-    addresses: Address[];
-    archived: boolean;
-    birth: Birthdate;
-    birthdate: string;
-    firstName: string;
-    gender: Gender;
-    highRiskCountry: boolean;
-    hits: PersonDetailsHitModel[][];
-    identity: PersonIdentity;
-    isPep: boolean;
-    isRca: boolean;
-    isSanction: boolean;
-    isSip: boolean;
-    lastChanged: LastChanged;
-    lastName: string;
-    personReferenceId: string;
+    addresses?: Address[];
+    archived?: boolean;
+    birth?: Birthdate;
+    birthdate?: string;
+    firstName?: string;
+    gender?: Gender;
+    highRiskCountry?: boolean;
+    hits?: PersonDetailsHitModel[][];
+    identity?: PersonIdentity;
+    isPep?: boolean;
+    isRca?: boolean;
+    isSanction?: boolean;
+    isSip?: boolean;
+    lastChanged?: LastChanged;
+    lastName?: string;
+    personReferenceId?: string;
 }
 
 export interface WatchlistCompanyQuery {
@@ -581,6 +596,28 @@ export interface WatchlistQueryV2 {
     personReferenceId: string;
 }
 
+export interface WatchlistSource {
+    filename?: string;
+    source?: string;
+    updatedAt?: Date;
+}
+
+export interface WebhookPokeQuery {
+    type?: WebhookPokeType;
+}
+
+export interface WebhookPokeQueryResult extends Response {
+    remoteBody?: string;
+    remoteStatusCode?: number;
+}
+
+export enum WebhookPokeType {
+    PersonSanctionMatched = 'PersonSanctionMatched',
+    PersonSanctionMatchRemoved = 'PersonSanctionMatchRemoved',
+    CompanySanctionMatched = 'CompanySanctionMatched',
+    CompanySanctionMatchRemoved = 'CompanySanctionMatchRemoved',
+}
+
 export interface WebhookQuery {
 }
 
@@ -588,15 +625,15 @@ export interface WebhookQueryResult extends ResponseGeneric<WebhookQueryResultDa
 }
 
 export interface WebhookQueryResultData {
-    enabled: boolean;
-    secret: string;
-    url: string;
+    enabled?: boolean;
+    secret?: string;
+    url?: string;
 }
 
 export interface WebhookUpdateCommand {
-    enabled: boolean;
-    secret: string;
-    url: string;
+    enabled?: boolean;
+    secret?: string;
+    url?: string;
 }
 
 export interface WebhookUpdateResponse extends Response {
