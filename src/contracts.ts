@@ -74,19 +74,6 @@ export interface ClassifyPersonHitCommand {
 export interface ClassifyPersonHitResponse extends Response {
 }
 
-export interface CompanyData {
-    address?: string | null;
-    city?: string | null;
-    country?: string | null;
-    description?: string | null;
-    name?: string | null;
-    owners?: Owners | null;
-    parentCompanyName?: string | null;
-    registrationDate?: Date | null;
-    ultimateParentCompany?: UltimateCompany | null;
-    zipCode?: string | null;
-}
-
 export interface CompanyFilter {
     isSanction?: boolean | null;
 }
@@ -104,14 +91,6 @@ export interface CompanyHit {
 export interface CompanyIdentity {
     country?: string | null;
     identity?: string | null;
-}
-
-export interface CompanyOwner {
-    name?: string | null;
-    organizationNumber?: string | null;
-    shares?: number | null;
-    stake?: number | null;
-    votes?: number | null;
 }
 
 export interface CompanyReportPost {
@@ -324,11 +303,6 @@ export enum Order {
     Exact = 'Exact',
 }
 
-export interface Owners {
-    companies?: CompanyOwner[] | null;
-    persons?: PersonOwner[] | null;
-}
-
 export interface Page {
     no?: number | null;
     size?: number | null;
@@ -353,15 +327,6 @@ export interface PersonDetailsHitModel {
 export interface PersonIdentity {
     country?: string | null;
     identity?: string | null;
-}
-
-export interface PersonOwner {
-    firstName?: string | null;
-    lastName?: string | null;
-    nationalIdentityNumber?: string | null;
-    shares?: number | null;
-    stake?: number | null;
-    votes?: number | null;
 }
 
 export interface PersonReportPost {
@@ -475,12 +440,6 @@ export interface TextMatch {
     text?: string | null;
 }
 
-export interface UltimateCompany {
-    identity?: string | null;
-    isForeign?: boolean | null;
-    name?: string | null;
-}
-
 export interface UnarchiveCompanyCommand {
     companyReferenceId: string;
 }
@@ -493,13 +452,6 @@ export interface UnarchivePersonCommand {
 }
 
 export interface UnarchivePersonResponse extends Response {
-}
-
-export interface ViewCompanyDataQuery {
-    identity: string;
-}
-
-export interface ViewCompanyDataQueryResult extends ResponseGeneric<CompanyData> {
 }
 
 export interface ViewCompanyPersonResponse {
