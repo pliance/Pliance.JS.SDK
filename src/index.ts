@@ -14,6 +14,8 @@ import {
     ClassifyCompanyHitCommand,
     ClassifyPersonHitResponse,
     ClassifyPersonHitCommand,
+    ViewCompanyDataQueryResult,
+    ViewCompanyDataQuery,
     DeleteCompanyResponse,
     DeleteCompanyCommand,
     DeletePersonResponse,
@@ -65,6 +67,7 @@ export interface IPlianceClient {
     archivePerson(command: ArchivePersonCommand): Promise<ArchivePersonResponse>;
     classifyCompanyHit(command: ClassifyCompanyHitCommand): Promise<ClassifyCompanyHitResponse>;
     classifyPersonHit(command: ClassifyPersonHitCommand): Promise<ClassifyPersonHitResponse>;
+    companyData(request: ViewCompanyDataQuery): Promise<ViewCompanyDataQueryResult>;
     deleteCompany(command: DeleteCompanyCommand): Promise<DeleteCompanyResponse>;
     deletePerson(command: DeletePersonCommand): Promise<DeletePersonResponse>;
     feed(request: FeedQuery): Promise<FeedQueryResult>;
@@ -138,6 +141,18 @@ class PlianceClient implements IPlianceClient {
         try {
             let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<ViewCompanyQueryResult>(`api/CompanyQuery?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async companyData(request: ViewCompanyDataQuery): Promise<ViewCompanyDataQueryResult> {
+        try {
+            let params = qs.stringify(request, { allowDots: true });
+            let response = await this.execute<ViewCompanyDataQueryResult>(`api/CompanyQuery/CompanyData?${params}`, 'get');
             return response;
         }
         catch (e) {

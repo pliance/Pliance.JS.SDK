@@ -48,6 +48,15 @@ export interface Birthdate {
     year?: number | null;
 }
 
+export interface Boardmember {
+    city?: string | null;
+    countryOfResidence?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nationalIdentityNumber?: string | null;
+    zipCode?: string | null;
+}
+
 export enum ClassificationType {
     Unknown = 'Unknown',
     FalsePositive = 'FalsePositive',
@@ -74,8 +83,29 @@ export interface ClassifyPersonHitCommand {
 export interface ClassifyPersonHitResponse extends Response {
 }
 
+export interface Company {
+    identity?: string | null;
+    name?: string | null;
+}
+
+export interface CompanyData {
+    address?: string | null;
+    boardmembers?: Boardmember[] | null;
+    city?: string | null;
+    country?: string | null;
+    description?: string | null;
+    name?: string | null;
+    owners?: Owners | null;
+    parentCompany?: Company | null;
+    registrationDate?: Date | null;
+    signatory?: string | null;
+    ultimateParentCompany?: UltimateCompany | null;
+    zipCode?: string | null;
+}
+
 export interface CompanyFilter {
     isSanction?: boolean | null;
+    isUnclassified?: boolean | null;
 }
 
 export interface CompanyHit {
@@ -91,6 +121,14 @@ export interface CompanyHit {
 export interface CompanyIdentity {
     country?: string | null;
     identity?: string | null;
+}
+
+export interface CompanyOwner {
+    name?: string | null;
+    organizationNumber?: string | null;
+    shares?: number | null;
+    stake?: number | null;
+    votes?: number | null;
 }
 
 export interface CompanyReportPost {
@@ -173,13 +211,6 @@ export interface FeedQueryResult extends ResponseGeneric<FeedQueryResultData> {
 
 export interface FeedQueryResultData {
     items?: FeedQueryItem[] | null;
-}
-
-export interface Filter {
-    isPep?: boolean | null;
-    isRca?: boolean | null;
-    isSanction?: boolean | null;
-    isSip?: boolean | null;
 }
 
 export enum Fuzziness {
@@ -303,6 +334,11 @@ export enum Order {
     Exact = 'Exact',
 }
 
+export interface Owners {
+    companies?: CompanyOwner[] | null;
+    persons?: PersonOwner[] | null;
+}
+
 export interface Page {
     no?: number | null;
     size?: number | null;
@@ -324,9 +360,26 @@ export interface PersonDetailsHitModel {
     score?: number | null;
 }
 
+export interface PersonFilter {
+    isPep?: boolean | null;
+    isRca?: boolean | null;
+    isSanction?: boolean | null;
+    isSip?: boolean | null;
+    isUnclassified?: boolean | null;
+}
+
 export interface PersonIdentity {
     country?: string | null;
     identity?: string | null;
+}
+
+export interface PersonOwner {
+    firstName?: string | null;
+    lastName?: string | null;
+    nationalIdentityNumber?: string | null;
+    shares?: number | null;
+    stake?: number | null;
+    votes?: number | null;
 }
 
 export interface PersonReportPost {
@@ -352,7 +405,7 @@ export interface PersonReportQueryResultData {
 }
 
 export interface PersonSearchQuery {
-    filter?: Filter | null;
+    filter?: PersonFilter | null;
     page?: Page | null;
     query?: string | null;
 }
@@ -440,6 +493,12 @@ export interface TextMatch {
     text?: string | null;
 }
 
+export interface UltimateCompany {
+    identity?: string | null;
+    isForeign?: boolean | null;
+    name?: string | null;
+}
+
 export interface UnarchiveCompanyCommand {
     companyReferenceId: string;
 }
@@ -454,6 +513,13 @@ export interface UnarchivePersonCommand {
 export interface UnarchivePersonResponse extends Response {
 }
 
+export interface ViewCompanyDataQuery {
+    companyReferenceId: string;
+}
+
+export interface ViewCompanyDataQueryResult extends ResponseGeneric<CompanyData> {
+}
+
 export interface ViewCompanyPersonResponse {
     addresses?: Address[] | null;
     archived?: boolean | null;
@@ -463,7 +529,7 @@ export interface ViewCompanyPersonResponse {
     firstName?: string | null;
     gender?: Gender | null;
     highRiskCountry?: boolean | null;
-    hits?: PersonDetailsHitModel[][] | null;
+    hits: PersonDetailsHitModel[][];
     identity?: PersonIdentity | null;
     isPep?: boolean | null;
     isRca?: boolean | null;
@@ -488,7 +554,7 @@ export interface ViewCompanyResponseData {
     corporateForm?: string | null;
     description?: string | null;
     highRiskCountry?: boolean | null;
-    hits?: CompanyHit[][] | null;
+    hits: CompanyHit[][];
     identity?: CompanyIdentity | null;
     isSanction?: boolean | null;
     lastChanged?: LastChanged | null;
@@ -512,7 +578,7 @@ export interface ViewPersonResponseData {
     firstName?: string | null;
     gender?: Gender | null;
     highRiskCountry?: boolean | null;
-    hits?: PersonDetailsHitModel[][] | null;
+    hits: PersonDetailsHitModel[][];
     identity?: PersonIdentity | null;
     isPep?: boolean | null;
     isRca?: boolean | null;
