@@ -483,7 +483,7 @@ class JWTFactory {
     }
 
     btoa(str: string): string {
-        let buffer = Buffer.from(str, 'binary');
+        let buffer = Buffer.from(str);
 
         return buffer.toString('base64');
     }
