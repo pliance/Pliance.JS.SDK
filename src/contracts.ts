@@ -48,12 +48,13 @@ export interface Birthdate {
     year?: number | null;
 }
 
-export interface Boardmember {
+export interface BoardMember {
     city?: string | null;
     countryOfResidence?: string | null;
     firstName?: string | null;
     lastName?: string | null;
     nationalIdentityNumber?: string | null;
+    role?: Role | null;
     zipCode?: string | null;
 }
 
@@ -90,7 +91,7 @@ export interface Company {
 
 export interface CompanyData {
     address?: string | null;
-    boardmembers?: Boardmember[] | null;
+    boardmembers?: BoardMember[] | null;
     city?: string | null;
     country?: string | null;
     description?: string | null;
@@ -486,6 +487,14 @@ export interface ReportPost {
 export enum ResponseStatus {
     Success = 'Success',
     Error = 'Error',
+}
+
+export enum Role {
+    Chairman = 'Chairman',
+    Ceo = 'Ceo',
+    BoardMember = 'BoardMember',
+    Accountant = 'Accountant',
+    AlternateMember = 'AlternateMember',
 }
 
 export interface TextMatch {
