@@ -30,6 +30,10 @@ import {
     PersonReportQuery,
     WebhookQueryResult,
     WebhookQuery,
+    ListCompanyQueryResult,
+    ListCompanyQuery,
+    ListPersonQueryResult,
+    ListPersonQuery,
     PingResponse,
     PingQuery,
     WebhookPokeQueryResult,
@@ -75,6 +79,8 @@ export interface IPlianceClient {
     getGeneralReport(request: GeneralReportQuery): Promise<GeneralReportQueryResult>;
     getPersonReport(request: PersonReportQuery): Promise<PersonReportQueryResult>;
     getWebhook(request: WebhookQuery): Promise<WebhookQueryResult>;
+    listCompanies(request: ListCompanyQuery): Promise<ListCompanyQueryResult>;
+    listPersons(request: ListPersonQuery): Promise<ListPersonQueryResult>;
     ping(request: PingQuery): Promise<PingResponse>;
     poke(query: WebhookPokeQuery): Promise<WebhookPokeQueryResult>;
     registerCompany(command: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
@@ -161,6 +167,18 @@ class PlianceClient implements IPlianceClient {
         }
     }
 
+    async listCompanies(request: ListCompanyQuery): Promise<ListCompanyQueryResult> {
+        try {
+            let params = qs.stringify(request, { allowDots: true });
+            let response = await this.execute<ListCompanyQueryResult>(`api/CompanyQuery/List?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
     async feed(request: FeedQuery): Promise<FeedQueryResult> {
         try {
             let params = qs.stringify(request, { allowDots: true });
@@ -189,6 +207,18 @@ class PlianceClient implements IPlianceClient {
         try {
             let params = qs.stringify(request, { allowDots: true });
             let response = await this.execute<ViewPersonQueryResult>(`api/PersonQuery?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async listPersons(request: ListPersonQuery): Promise<ListPersonQueryResult> {
+        try {
+            let params = qs.stringify(request, { allowDots: true });
+            let response = await this.execute<ListPersonQueryResult>(`api/PersonQuery/List?${params}`, 'get');
             return response;
         }
         catch (e) {

@@ -261,10 +261,21 @@ export interface ListBirthdate {
     year?: number | null;
 }
 
+export interface ListCompaniesModel {
+    changed?: LastChanged | null;
+    companies?: string[] | null;
+}
+
 export interface ListCompanyNameViewModel {
     name?: string | null;
     selectedName?: TextMatch[] | null;
     type?: string | null;
+}
+
+export interface ListCompanyQuery {
+}
+
+export interface ListCompanyQueryResult extends ResponseGeneric<ListCompaniesModel> {
 }
 
 export interface ListCompanyViewModel {
@@ -281,6 +292,12 @@ export interface ListPersonNameViewModel {
     selectedFirstName?: TextMatch[] | null;
     selectedLastName?: TextMatch[] | null;
     type?: string | null;
+}
+
+export interface ListPersonQuery {
+}
+
+export interface ListPersonQueryResult extends ResponseGeneric<ListPersonsModel> {
 }
 
 export interface ListPersonViewModel {
@@ -305,6 +322,11 @@ export interface ListPersonViewModel {
     roles?: ListRole[] | null;
     sources?: string[] | null;
     watchlistSource?: WatchlistSource | null;
+}
+
+export interface ListPersonsModel {
+    changed?: LastChanged | null;
+    persons?: string[] | null;
 }
 
 export interface ListRelationViewModel {
