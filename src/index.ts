@@ -111,6 +111,7 @@ export class ClientFactory {
         let headers = new Headers();
         headers.append('Authorization', 'Bearer ' + jwt.generateJWT(this.secret, this.issuer, givenName, subject));
         headers.append('Content-Type', 'application/json');
+        headers.append('User-Agent', 'Pliance.JS.SDK:VERSION');
 
         let body = data != undefined ? JSON.stringify(data) : undefined;
         let url = this.url + endpoint;

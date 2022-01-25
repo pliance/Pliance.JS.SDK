@@ -95,6 +95,7 @@ export interface CompanyData {
     city?: string | null;
     country?: string | null;
     description?: string | null;
+    legalForm?: LegalForm | null;
     name?: string | null;
     owners?: Owners | null;
     parentCompany?: Company | null;
@@ -240,6 +241,28 @@ export interface GeneralReportQueryResultData {
 export interface LastChanged {
     checkpoint?: string | null;
     timestampUtc?: Date | null;
+}
+
+export interface LegalForm {
+    description?: string | null;
+    type?: LegalFormType | null;
+}
+
+export enum LegalFormType {
+    LimitedCompany = 'LimitedCompany',
+    PrivateBusinessGovControlled = 'PrivateBusinessGovControlled',
+    ForeignCompany = 'ForeignCompany',
+    Bank = 'Bank',
+    SoleProprietorship = 'SoleProprietorship',
+    GeneralPartnership = 'GeneralPartnership',
+    Society = 'Society',
+    Foundation = 'Foundation',
+    HousingCompany = 'HousingCompany',
+    StateOrCountyCompany = 'StateOrCountyCompany',
+    ReligiousOrganisation = 'ReligiousOrganisation',
+    InsuranceCompany = 'InsuranceCompany',
+    Collaborations = 'Collaborations',
+    Other = 'Other',
 }
 
 export interface ListAddress {
