@@ -34,6 +34,8 @@ import {
     ListCompanyQuery,
     ListPersonQueryResult,
     ListPersonQuery,
+    WebhookDeliveryFailuresQueryResult,
+    WebhookDeliveryFailuresQuery,
     PingResponse,
     PingQuery,
     WebhookPokeQueryResult,
@@ -81,6 +83,7 @@ export interface IPlianceClient {
     getWebhook(request: WebhookQuery): Promise<WebhookQueryResult>;
     listCompanies(request: ListCompanyQuery): Promise<ListCompanyQueryResult>;
     listPersons(request: ListPersonQuery): Promise<ListPersonQueryResult>;
+    listWebhookDeliveryFailures(query: WebhookDeliveryFailuresQuery): Promise<WebhookDeliveryFailuresQueryResult>;
     ping(request: PingQuery): Promise<PingResponse>;
     poke(query: WebhookPokeQuery): Promise<WebhookPokeQueryResult>;
     registerCompany(command: RegisterCompanyCommand): Promise<RegisterCompanyResponse>;
@@ -327,6 +330,18 @@ class PlianceClient implements IPlianceClient {
     async poke(query: WebhookPokeQuery): Promise<WebhookPokeQueryResult> {
         try {
             let response = await this.execute<WebhookPokeQueryResult>(`api/WebhookQuery/Poke`, 'post', query);
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async listWebhookDeliveryFailures(query: WebhookDeliveryFailuresQuery): Promise<WebhookDeliveryFailuresQueryResult> {
+        try {
+            let params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<WebhookDeliveryFailuresQueryResult>(`api/WebhookQuery/DeliveryFailures?${params}`, 'get');
             return response;
         }
         catch (e) {

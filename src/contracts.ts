@@ -37,24 +37,27 @@ export interface ArchivePersonCommand {
 export interface ArchivePersonResponse extends Response {
 }
 
-export enum BirthMatchType {
-    Date = 'Date',
-    Range = 'Range',
-}
-
 export interface Birthdate {
     day?: number | null;
     month?: number | null;
     year?: number | null;
 }
 
+export enum BirthMatchType {
+    Date = 'Date',
+    Range = 'Range',
+}
+
 export interface BoardMember {
     city?: string | null;
+    companyIdentityNumber?: string | null;
     countryOfResidence?: string | null;
     firstName?: string | null;
     lastName?: string | null;
+    name?: string | null;
     nationalIdentityNumber?: string | null;
     role?: Role | null;
+    street?: string | null;
     zipCode?: string | null;
 }
 
@@ -114,8 +117,8 @@ export interface CompanyHit {
     aliasId?: string | null;
     classification?: ClassificationType | null;
     isSanction?: boolean | null;
-    matchId?: string | null;
     matchedName?: TextMatch[] | null;
+    matchId?: string | null;
     name?: string | null;
     score?: number | null;
 }
@@ -143,7 +146,7 @@ export interface CompanyReportPost {
 }
 
 export interface CompanyReportQuery {
-    companyReferenceId?: string | null;
+    companyReferenceId: string;
     from?: Date | null;
     to?: Date | null;
 }
@@ -192,13 +195,8 @@ export interface DeletePersonCommand {
 export interface DeletePersonResponse extends Response {
 }
 
-export interface EngagementModel {
-    name?: string | null;
-    registrationNumber?: string | null;
-}
-
 export interface FeedQuery {
-    from?: string | null;
+    from: string;
 }
 
 export interface FeedQueryItem {
@@ -245,24 +243,7 @@ export interface LastChanged {
 
 export interface LegalForm {
     description?: string | null;
-    type?: LegalFormType | null;
-}
-
-export enum LegalFormType {
-    LimitedCompany = 'LimitedCompany',
-    PrivateBusinessGovControlled = 'PrivateBusinessGovControlled',
-    ForeignCompany = 'ForeignCompany',
-    Bank = 'Bank',
-    SoleProprietorship = 'SoleProprietorship',
-    GeneralPartnership = 'GeneralPartnership',
-    Society = 'Society',
-    Foundation = 'Foundation',
-    HousingCompany = 'HousingCompany',
-    StateOrCountyCompany = 'StateOrCountyCompany',
-    ReligiousOrganisation = 'ReligiousOrganisation',
-    InsuranceCompany = 'InsuranceCompany',
-    Collaborations = 'Collaborations',
-    Other = 'Other',
+    type?: number | null;
 }
 
 export interface ListAddress {
@@ -284,8 +265,7 @@ export interface ListBirthdate {
     year?: number | null;
 }
 
-export interface ListCompaniesModel {
-    changed?: LastChanged | null;
+export interface ListCompanyCompanies {
     companies?: string[] | null;
 }
 
@@ -296,13 +276,15 @@ export interface ListCompanyNameViewModel {
 }
 
 export interface ListCompanyQuery {
+    page?: Page | null;
 }
 
-export interface ListCompanyQueryResult extends ResponseGeneric<ListCompaniesModel> {
+export interface ListCompanyQueryResult extends ResponseGeneric<ListCompanyCompanies> {
 }
 
 export interface ListCompanyViewModel {
     isSanction?: boolean | null;
+    isSie?: boolean | null;
     listId?: string | null;
     names?: ListCompanyNameViewModel[] | null;
     sanctionLists?: string[] | null;
@@ -317,10 +299,15 @@ export interface ListPersonNameViewModel {
     type?: string | null;
 }
 
-export interface ListPersonQuery {
+export interface ListPersonPersons {
+    persons?: string[] | null;
 }
 
-export interface ListPersonQueryResult extends ResponseGeneric<ListPersonsModel> {
+export interface ListPersonQuery {
+    page?: Page | null;
+}
+
+export interface ListPersonQueryResult extends ResponseGeneric<ListPersonPersons> {
 }
 
 export interface ListPersonViewModel {
@@ -345,11 +332,6 @@ export interface ListPersonViewModel {
     roles?: ListRole[] | null;
     sources?: string[] | null;
     watchlistSource?: WatchlistSource | null;
-}
-
-export interface ListPersonsModel {
-    changed?: LastChanged | null;
-    persons?: string[] | null;
 }
 
 export interface ListRelationViewModel {
@@ -399,9 +381,9 @@ export interface PersonDetailsHitModel {
     isSanction?: boolean | null;
     isSip?: boolean | null;
     lastName?: string | null;
-    matchId?: string | null;
     matchedFirstName?: TextMatch[] | null;
     matchedLastName?: TextMatch[] | null;
+    matchId?: string | null;
     referenceId?: string | null;
     score?: number | null;
 }
@@ -439,7 +421,7 @@ export interface PersonReportPost {
 
 export interface PersonReportQuery {
     from?: Date | null;
-    personReferenceId?: string | null;
+    personReferenceId: string;
     to?: Date | null;
 }
 
@@ -490,7 +472,6 @@ export interface RegisterCompanyCommand {
 
 export interface RegisterCompanyOptions {
     fuzziness?: Fuzziness | null;
-    omitResult?: boolean | null;
     omitUltimateBenefitOwner?: boolean | null;
     order?: Order | null;
     validateCompany?: boolean | null;
@@ -512,7 +493,6 @@ export interface RegisterPersonCommand {
 
 export interface RegisterPersonOptions {
     fuzziness?: Fuzziness | null;
-    omitResult?: boolean | null;
     order?: Order | null;
     pepCountries?: string[] | null;
 }
@@ -538,8 +518,11 @@ export enum Role {
     Chairman = 'Chairman',
     Ceo = 'Ceo',
     BoardMember = 'BoardMember',
-    Accountant = 'Accountant',
+    LeadAccountant = 'LeadAccountant',
     AlternateMember = 'AlternateMember',
+    ExternalSignatory = 'ExternalSignatory',
+    Accountant = 'Accountant',
+    ExternalCeo = 'ExternalCeo',
 }
 
 export interface TextMatch {
@@ -579,7 +562,6 @@ export interface ViewCompanyPersonResponse {
     archived?: boolean | null;
     birth?: Birthdate | null;
     birthdate?: string | null;
-    engagements?: EngagementModel[] | null;
     firstName?: string | null;
     gender?: Gender | null;
     highRiskCountry?: boolean | null;
@@ -605,16 +587,12 @@ export interface ViewCompanyResponseData {
     archived?: boolean | null;
     beneficiaries?: ViewCompanyPersonResponse[] | null;
     companyReferenceId?: string | null;
-    corporateForm?: string | null;
-    description?: string | null;
     highRiskCountry?: boolean | null;
     hits: CompanyHit[][];
     identity?: CompanyIdentity | null;
     isSanction?: boolean | null;
     lastChanged?: LastChanged | null;
     name?: string | null;
-    registrationDate?: Date | null;
-    representatives?: ViewPersonResponseData[] | null;
 }
 
 export interface ViewPersonQuery {
@@ -672,6 +650,24 @@ export interface WatchlistSource {
     filename?: string | null;
     source?: string | null;
     updatedAt?: Date | null;
+}
+
+export interface WebhookDeliveryFailure {
+    id?: string | null;
+    reason?: string | null;
+    referenceId?: string | null;
+    timestamp?: Date | null;
+    type?: string | null;
+}
+
+export interface WebhookDeliveryFailuresQuery {
+}
+
+export interface WebhookDeliveryFailuresQueryResult extends ResponseGeneric<WebhookDeliveryFailuresQueryResultData> {
+}
+
+export interface WebhookDeliveryFailuresQueryResultData {
+    items?: WebhookDeliveryFailure[] | null;
 }
 
 export interface WebhookPokeQuery {
