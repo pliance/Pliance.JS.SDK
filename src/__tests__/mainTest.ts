@@ -97,7 +97,10 @@ test('Ping', async () => {
 });
 
 test('Ping No Cert', async () => {
-    let factory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://local-no-cert.pliance.io/', undefined);
+    let agent = new Agent({
+        rejectUnauthorized: false
+    });
+    let factory = new ClientFactory('2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b', 'Demo', 'https://local-no-cert.pliance.io/', agent);
     let client = factory.create('givenname', 'sub')
     let query = <PingQuery>{};
     let res = await client.ping(query);
