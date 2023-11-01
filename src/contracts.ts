@@ -24,17 +24,42 @@ export interface Address {
 }
 
 export interface ArchiveCompanyCommand {
-    companyReferenceId: string;
+    companyReferenceId?: string | null;
 }
 
 export interface ArchiveCompanyResponse extends Response {
 }
 
 export interface ArchivePersonCommand {
-    personReferenceId: string;
+    personReferenceId?: string | null;
 }
 
 export interface ArchivePersonResponse extends Response {
+}
+
+export interface BatchPerson {
+    addresses?: Address[] | null;
+    birthdate?: Birthdate | null;
+    firstName?: string | null;
+    gender?: string | null;
+    identity?: PersonIdentity | null;
+    lastName?: string | null;
+    personReferenceId?: string | null;
+}
+
+export interface BatchPersonStatus {
+    message?: string | null;
+    personReferenceId?: string | null;
+    status?: ResponseStatus | null;
+}
+
+export interface BatchRegisterPersonCommand {
+    options?: RegisterPersonOptions | null;
+    persons?: BatchPerson[] | null;
+}
+
+export interface BatchRegisterPersonResponse extends Response {
+    personStatuses?: BatchPersonStatus[] | null;
 }
 
 export interface Birthdate {
@@ -67,21 +92,42 @@ export enum ClassificationType {
     Match = 'Match',
 }
 
+export interface ClassifyCompanyCommand {
+    aliasId?: string | null;
+    classification?: ClassificationType | null;
+    companyReferenceId?: string | null;
+    matchId?: string | null;
+}
+
 export interface ClassifyCompanyHitCommand {
-    aliasId: string;
-    classification: ClassificationType;
-    companyReferenceId: string;
-    matchId: string;
+    aliasId?: string | null;
+    classification?: ClassificationType | null;
+    companyReferenceId?: string | null;
+    matchId?: string | null;
 }
 
 export interface ClassifyCompanyHitResponse extends Response {
 }
 
+export interface ClassifyCompanyLinkCommand {
+    aliasId?: string | null;
+    classification?: ClassificationType | null;
+    companyReferenceId?: string | null;
+    linkId?: string | null;
+    matchId?: string | null;
+}
+
+export interface ClassifyCompanyLinkResponse extends Response {
+}
+
+export interface ClassifyCompanyResponse extends Response {
+}
+
 export interface ClassifyPersonHitCommand {
-    aliasId: string;
-    classification: ClassificationType;
-    matchId: string;
-    personReferenceId: string;
+    aliasId?: string | null;
+    classification?: ClassificationType | null;
+    matchId?: string | null;
+    personReferenceId?: string | null;
 }
 
 export interface ClassifyPersonHitResponse extends Response {
@@ -99,6 +145,8 @@ export interface CompanyData {
     country?: string | null;
     description?: string | null;
     legalForm?: LegalForm | null;
+    legalFormType?: LegalFormType | null;
+    listingType?: ListingType | null;
     name?: string | null;
     owners?: Owners | null;
     parentCompany?: Company | null;
@@ -110,6 +158,7 @@ export interface CompanyData {
 
 export interface CompanyFilter {
     isSanction?: boolean | null;
+    isSie?: boolean | null;
     isUnclassified?: boolean | null;
 }
 
@@ -146,7 +195,7 @@ export interface CompanyReportPost {
 }
 
 export interface CompanyReportQuery {
-    companyReferenceId: string;
+    companyReferenceId?: string | null;
     from?: Date | null;
     to?: Date | null;
 }
@@ -178,39 +227,28 @@ export interface CompanySearchResult {
     isPep?: boolean | null;
     isRca?: boolean | null;
     isSanction?: boolean | null;
+    isSie?: boolean | null;
     name?: TextMatch[] | null;
 }
 
 export interface DeleteCompanyCommand {
-    companyReferenceId: string;
+    companyReferenceId?: string | null;
 }
 
 export interface DeleteCompanyResponse extends Response {
 }
 
 export interface DeletePersonCommand {
-    personReferenceId: string;
+    personReferenceId?: string | null;
 }
 
 export interface DeletePersonResponse extends Response {
 }
 
-export interface FeedQuery {
-    from: string;
-}
-
-export interface FeedQueryItem {
-    body?: any | null;
-    checkpoint?: string | null;
-    metadata?: any | null;
-    type?: string | null;
-}
-
-export interface FeedQueryResult extends ResponseGeneric<FeedQueryResultData> {
-}
-
-export interface FeedQueryResultData {
-    items?: FeedQueryItem[] | null;
+export enum EntityType {
+    Unspecified = 'Unspecified',
+    Person = 'Person',
+    Company = 'Company',
 }
 
 export enum Fuzziness {
@@ -244,6 +282,49 @@ export interface LastChanged {
 export interface LegalForm {
     description?: string | null;
     type?: number | null;
+}
+
+export enum LegalFormType {
+    LimitedCompany = 'LimitedCompany',
+    PrivateBusinessGovControlled = 'PrivateBusinessGovControlled',
+    ForeignCompany = 'ForeignCompany',
+    Bank = 'Bank',
+    SoleProprietorship = 'SoleProprietorship',
+    GeneralPartnership = 'GeneralPartnership',
+    Society = 'Society',
+    Foundation = 'Foundation',
+    HousingCompany = 'HousingCompany',
+    StateOrCountyCompany = 'StateOrCountyCompany',
+    ReligiousOrganisation = 'ReligiousOrganisation',
+    InsuranceCompany = 'InsuranceCompany',
+    Collaborations = 'Collaborations',
+    Other = 'Other',
+}
+
+export interface LinkDescriptionModel {
+    roles?: Role[] | null;
+    type?: LinkType | null;
+}
+
+export interface LinkModel {
+    birthDate?: Birthdate | null;
+    entityType?: EntityType | null;
+    firstName?: string | null;
+    gender?: Gender | null;
+    id?: string | null;
+    lastName?: string | null;
+    linkDescriptions?: LinkDescriptionModel[] | null;
+    matches?: PersonDetailsHitModel[] | null;
+    name?: string | null;
+    organizationIdentityNumber?: string | null;
+    personIdentityNumber?: string | null;
+}
+
+export enum LinkType {
+    Owner = 'Owner',
+    BoardMember = 'BoardMember',
+    UltimateBeneficialOwner = 'UltimateBeneficialOwner',
+    AlternateBeneficialOwner = 'AlternateBeneficialOwner',
 }
 
 export interface ListAddress {
@@ -283,12 +364,20 @@ export interface ListCompanyQueryResult extends ResponseGeneric<ListCompanyCompa
 }
 
 export interface ListCompanyViewModel {
+    active?: boolean | null;
+    addresses?: ListAddress[] | null;
     isSanction?: boolean | null;
     isSie?: boolean | null;
     listId?: string | null;
     names?: ListCompanyNameViewModel[] | null;
+    notes?: string[] | null;
     sanctionLists?: string[] | null;
     watchlistSource?: WatchlistSource | null;
+}
+
+export enum ListingType {
+    Listed = 'Listed',
+    Unlisted = 'Unlisted',
 }
 
 export interface ListPersonNameViewModel {
@@ -421,7 +510,7 @@ export interface PersonReportPost {
 
 export interface PersonReportQuery {
     from?: Date | null;
-    personReferenceId: string;
+    personReferenceId?: string | null;
     to?: Date | null;
 }
 
@@ -464,9 +553,9 @@ export interface PingResponse extends Response {
 }
 
 export interface RegisterCompanyCommand {
-    companyReferenceId: string;
+    companyReferenceId?: string | null;
     identity?: CompanyIdentity | null;
-    name: string;
+    name?: string | null;
     options?: RegisterCompanyOptions | null;
 }
 
@@ -480,15 +569,25 @@ export interface RegisterCompanyOptions {
 export interface RegisterCompanyResponse extends ResponseGeneric<ViewCompanyResponseData> {
 }
 
+export interface RegisterCompanyV2Command {
+    companyReferenceId?: string | null;
+    identity?: CompanyIdentity | null;
+    name?: string | null;
+    options?: RegisterCompanyOptions | null;
+}
+
+export interface RegisterCompanyV2Response extends ResponseGeneric<ViewCompanyV2ResponseData> {
+}
+
 export interface RegisterPersonCommand {
     addresses?: Address[] | null;
     birthdate?: Birthdate | null;
-    firstName: string;
+    firstName?: string | null;
     gender?: string | null;
     identity?: PersonIdentity | null;
-    lastName: string;
+    lastName?: string | null;
     options?: RegisterPersonOptions | null;
-    personReferenceId: string;
+    personReferenceId?: string | null;
 }
 
 export interface RegisterPersonOptions {
@@ -523,6 +622,30 @@ export enum Role {
     ExternalSignatory = 'ExternalSignatory',
     Accountant = 'Accountant',
     ExternalCeo = 'ExternalCeo',
+    ExternalDeputyCeo = 'ExternalDeputyCeo',
+    SubstituteAccountant = 'SubstituteAccountant',
+    NonCertifiedSubstituteAccountant = 'NonCertifiedSubstituteAccountant',
+    Liquidator = 'Liquidator',
+    SubstituteLiquidator = 'SubstituteLiquidator',
+    Procurator = 'Procurator',
+    KeyPerson = 'KeyPerson',
+    PersonOfNotification = 'PersonOfNotification',
+    Owner = 'Owner',
+    NonCertifiedAccountant = 'NonCertifiedAccountant',
+    DeputyCeo = 'DeputyCeo',
+    Actuary = 'Actuary',
+    SubstituteChairman = 'SubstituteChairman',
+    SubstituteCeo = 'SubstituteCeo',
+    Complimentary = 'Complimentary',
+    LimitedPartnerOwner = 'LimitedPartnerOwner',
+    Director = 'Director',
+    Founder = 'Founder',
+    Unknown = 'Unknown',
+}
+
+export interface Sni {
+    classification?: string | null;
+    classificationCode?: string | null;
 }
 
 export interface TextMatch {
@@ -537,21 +660,21 @@ export interface UltimateCompany {
 }
 
 export interface UnarchiveCompanyCommand {
-    companyReferenceId: string;
+    companyReferenceId?: string | null;
 }
 
 export interface UnarchiveCompanyResponse extends Response {
 }
 
 export interface UnarchivePersonCommand {
-    personReferenceId: string;
+    personReferenceId?: string | null;
 }
 
 export interface UnarchivePersonResponse extends Response {
 }
 
 export interface ViewCompanyDataQuery {
-    companyReferenceId: string;
+    companyReferenceId?: string | null;
 }
 
 export interface ViewCompanyDataQueryResult extends ResponseGeneric<CompanyData> {
@@ -565,7 +688,7 @@ export interface ViewCompanyPersonResponse {
     firstName?: string | null;
     gender?: Gender | null;
     highRiskCountry?: boolean | null;
-    hits: PersonDetailsHitModel[][];
+    hits?: PersonDetailsHitModel[][] | null;
     identity?: PersonIdentity | null;
     isPep?: boolean | null;
     isRca?: boolean | null;
@@ -577,7 +700,7 @@ export interface ViewCompanyPersonResponse {
 }
 
 export interface ViewCompanyQuery {
-    companyReferenceId: string;
+    companyReferenceId?: string | null;
 }
 
 export interface ViewCompanyQueryResult extends ResponseGeneric<ViewCompanyResponseData> {
@@ -588,15 +711,39 @@ export interface ViewCompanyResponseData {
     beneficiaries?: ViewCompanyPersonResponse[] | null;
     companyReferenceId?: string | null;
     highRiskCountry?: boolean | null;
-    hits: CompanyHit[][];
+    hits?: CompanyHit[][] | null;
     identity?: CompanyIdentity | null;
     isSanction?: boolean | null;
+    isSie?: boolean | null;
     lastChanged?: LastChanged | null;
     name?: string | null;
 }
 
+export interface ViewCompanyV2Response extends ResponseGeneric<ViewCompanyV2ResponseData> {
+}
+
+export interface ViewCompanyV2ResponseData {
+    address?: string | null;
+    archived?: boolean | null;
+    city?: string | null;
+    companyReferenceId?: string | null;
+    description?: string | null;
+    highRiskCountry?: boolean | null;
+    hits?: CompanyHit[][] | null;
+    identity?: CompanyIdentity | null;
+    isSanction?: boolean | null;
+    isSie?: boolean | null;
+    lastChanged?: LastChanged | null;
+    legalForm?: LegalFormType | null;
+    links?: LinkModel[] | null;
+    name?: string | null;
+    signatory?: string | null;
+    sni?: Sni | null;
+    zipcode?: string | null;
+}
+
 export interface ViewPersonQuery {
-    personReferenceId: string;
+    personReferenceId?: string | null;
 }
 
 export interface ViewPersonQueryResult extends ResponseGeneric<ViewPersonResponseData> {
@@ -610,7 +757,7 @@ export interface ViewPersonResponseData {
     firstName?: string | null;
     gender?: Gender | null;
     highRiskCountry?: boolean | null;
-    hits: PersonDetailsHitModel[][];
+    hits?: PersonDetailsHitModel[][] | null;
     identity?: PersonIdentity | null;
     isPep?: boolean | null;
     isRca?: boolean | null;
@@ -622,17 +769,28 @@ export interface ViewPersonResponseData {
 }
 
 export interface WatchlistCompanyQuery {
-    companyReferenceId: string;
-    matchId: string;
+    companyReferenceId?: string | null;
+    matchId?: string | null;
 }
 
 export interface WatchlistCompanyQueryResult extends ResponseGeneric<ListCompanyViewModel> {
 }
 
+export interface WatchlistCompanyV2LinkQuery {
+    companyReferenceId?: string | null;
+    linkId?: string | null;
+    matchId?: string | null;
+}
+
+export interface WatchlistCompanyV2Query {
+    companyReferenceId?: string | null;
+    matchId?: string | null;
+}
+
 export interface WatchlistQuery {
-    firstName: string;
-    id: string;
-    lastName: string;
+    firstName?: string | null;
+    id?: string | null;
+    lastName?: string | null;
 }
 
 export interface WatchlistQueryResult extends ResponseGeneric<ListPersonViewModel> {
@@ -642,8 +800,8 @@ export interface WatchlistQueryResultV2 extends ResponseGeneric<ListPersonViewMo
 }
 
 export interface WatchlistQueryV2 {
-    matchId: string;
-    personReferenceId: string;
+    matchId?: string | null;
+    personReferenceId?: string | null;
 }
 
 export interface WatchlistSource {
@@ -652,8 +810,16 @@ export interface WatchlistSource {
     updatedAt?: Date | null;
 }
 
+export interface WebhookDeleteCommand {
+    id?: string | null;
+}
+
+export interface WebhookDeleteResponse extends Response {
+}
+
 export interface WebhookDeliveryFailure {
     id?: string | null;
+    onCreated?: boolean | null;
     reason?: string | null;
     referenceId?: string | null;
     timestamp?: Date | null;
@@ -671,6 +837,7 @@ export interface WebhookDeliveryFailuresQueryResultData {
 }
 
 export interface WebhookPokeQuery {
+    referenceId?: string | null;
     type?: WebhookPokeType | null;
 }
 
@@ -684,6 +851,19 @@ export enum WebhookPokeType {
     PersonSanctionMatchRemoved = 'PersonSanctionMatchRemoved',
     CompanySanctionMatched = 'CompanySanctionMatched',
     CompanySanctionMatchRemoved = 'CompanySanctionMatchRemoved',
+    CompanyNameChanged = 'CompanyNameChanged',
+    CompanyDescriptionChanged = 'CompanyDescriptionChanged',
+    CompanySignatoryChanged = 'CompanySignatoryChanged',
+    CompanyLinkAdded = 'CompanyLinkAdded',
+    CompanyLinkRemoved = 'CompanyLinkRemoved',
+    CompanyLinkUpdated = 'CompanyLinkUpdated',
+    CompanyLinkScreeningMatched = 'CompanyLinkScreeningMatched',
+    CompanyLinkScreeningMatchRemoved = 'CompanyLinkScreeningMatchRemoved',
+    CompanyLinkScreeningMatchedNameChanged = 'CompanyLinkScreeningMatchedNameChanged',
+    CompanyScreeningMatched = 'CompanyScreeningMatched',
+    CompanyScreeningMatchRemoved = 'CompanyScreeningMatchRemoved',
+    CompanyAddressChanged = 'CompanyAddressChanged',
+    CompanySniClassificationChanged = 'CompanySniClassificationChanged',
 }
 
 export interface WebhookQuery {
