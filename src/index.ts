@@ -38,6 +38,7 @@ import {
     WebhookQuery,
     ListCompanyQueryResult,
     ListCompanyQuery,
+    ListCompanyV2Query,
     ListPersonQueryResult,
     ListPersonQuery,
     WebhookDeliveryFailuresQueryResult,
@@ -98,6 +99,7 @@ export interface IPlianceClient {
     getPersonReport(request: PersonReportQuery): Promise<PersonReportQueryResult>;
     getWebhook(request: WebhookQuery): Promise<WebhookQueryResult>;
     listCompanies(request: ListCompanyQuery): Promise<ListCompanyQueryResult>;
+    listCompaniesV2(query: ListCompanyV2Query): Promise<ListCompanyQueryResult>;
     listPersons(request: ListPersonQuery): Promise<ListPersonQueryResult>;
     listWebhookDeliveryFailures(query: WebhookDeliveryFailuresQuery): Promise<WebhookDeliveryFailuresQueryResult>;
     ping(request: PingQuery): Promise<PingResponse>;
@@ -454,6 +456,18 @@ class PlianceClient implements IPlianceClient {
         try {
             let params = qs.stringify(query, { allowDots: true });
             let response = await this.execute<ViewCompanyV2Response>(`api/CompanyV2Query?${params}`, 'get');
+            return response;
+        }
+        catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async listCompaniesV2(query: ListCompanyV2Query): Promise<ListCompanyQueryResult> {
+        try {
+            let params = qs.stringify(query, { allowDots: true });
+            let response = await this.execute<ListCompanyQueryResult>(`api/CompanyV2Query/List?${params}`, 'get');
             return response;
         }
         catch (e) {

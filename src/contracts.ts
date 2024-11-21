@@ -311,6 +311,7 @@ export interface LinkModel {
     entityType?: EntityType | null;
     firstName?: string | null;
     gender?: Gender | null;
+    highRiskCountry?: boolean | null;
     id?: string | null;
     lastName?: string | null;
     linkDescriptions?: LinkDescriptionModel[] | null;
@@ -361,6 +362,10 @@ export interface ListCompanyQuery {
 }
 
 export interface ListCompanyQueryResult extends ResponseGeneric<ListCompanyCompanies> {
+}
+
+export interface ListCompanyV2Query {
+    page?: Page | null;
 }
 
 export interface ListCompanyViewModel {
@@ -425,6 +430,7 @@ export interface ListPersonViewModel {
 
 export interface ListRelationViewModel {
     firstName?: string | null;
+    isActive?: boolean | null;
     isPep?: boolean | null;
     isRca?: boolean | null;
     isSanction?: boolean | null;
@@ -685,6 +691,7 @@ export interface ViewCompanyPersonResponse {
     archived?: boolean | null;
     birth?: Birthdate | null;
     birthdate?: string | null;
+    checkedWatchLists?: string[] | null;
     firstName?: string | null;
     gender?: Gender | null;
     highRiskCountry?: boolean | null;
@@ -709,6 +716,7 @@ export interface ViewCompanyQueryResult extends ResponseGeneric<ViewCompanyRespo
 export interface ViewCompanyResponseData {
     archived?: boolean | null;
     beneficiaries?: ViewCompanyPersonResponse[] | null;
+    checkedWatchLists?: string[] | null;
     companyReferenceId?: string | null;
     highRiskCountry?: boolean | null;
     hits?: CompanyHit[][] | null;
@@ -725,6 +733,7 @@ export interface ViewCompanyV2Response extends ResponseGeneric<ViewCompanyV2Resp
 export interface ViewCompanyV2ResponseData {
     address?: string | null;
     archived?: boolean | null;
+    checkedWatchLists?: string[] | null;
     city?: string | null;
     companyReferenceId?: string | null;
     description?: string | null;
@@ -754,6 +763,7 @@ export interface ViewPersonResponseData {
     archived?: boolean | null;
     birth?: Birthdate | null;
     birthdate?: string | null;
+    checkedWatchLists?: string[] | null;
     firstName?: string | null;
     gender?: Gender | null;
     highRiskCountry?: boolean | null;
@@ -818,7 +828,9 @@ export interface WebhookDeleteResponse extends Response {
 }
 
 export interface WebhookDeliveryFailure {
+    body?: any | null;
     id?: string | null;
+    metadata?: any | null;
     onCreated?: boolean | null;
     reason?: string | null;
     referenceId?: string | null;
@@ -827,6 +839,7 @@ export interface WebhookDeliveryFailure {
 }
 
 export interface WebhookDeliveryFailuresQuery {
+    page?: Page | null;
 }
 
 export interface WebhookDeliveryFailuresQueryResult extends ResponseGeneric<WebhookDeliveryFailuresQueryResultData> {
@@ -857,6 +870,7 @@ export enum WebhookPokeType {
     CompanyLinkAdded = 'CompanyLinkAdded',
     CompanyLinkRemoved = 'CompanyLinkRemoved',
     CompanyLinkUpdated = 'CompanyLinkUpdated',
+    CompanyLinkDescriptionUpdated = 'CompanyLinkDescriptionUpdated',
     CompanyLinkScreeningMatched = 'CompanyLinkScreeningMatched',
     CompanyLinkScreeningMatchRemoved = 'CompanyLinkScreeningMatchRemoved',
     CompanyLinkScreeningMatchedNameChanged = 'CompanyLinkScreeningMatchedNameChanged',
