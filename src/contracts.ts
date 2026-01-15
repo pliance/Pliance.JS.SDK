@@ -878,6 +878,12 @@ export enum WebhookPokeType {
     CompanyScreeningMatchRemoved = 'CompanyScreeningMatchRemoved',
     CompanyAddressChanged = 'CompanyAddressChanged',
     CompanySniClassificationChanged = 'CompanySniClassificationChanged',
+    CompanyScreeningMatchesAdded = 'CompanyScreeningMatchesAdded',
+    CompanyScreeningMatchesRemoved = 'CompanyScreeningMatchesRemoved',
+    CompanyLinkScreeningMatchesAdded = 'CompanyLinkScreeningMatchesAdded',
+    CompanyLinkScreeningMatchesRemoved = 'CompanyLinkScreeningMatchesRemoved',
+    PersonScreeningMatchesAdded = 'PersonScreeningMatchesAdded',
+    PersonScreeningMatchesRemoved = 'PersonScreeningMatchesRemoved',
 }
 
 export interface WebhookQuery {

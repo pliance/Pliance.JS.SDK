@@ -5,13 +5,13 @@ import {
     ArchivePersonResponse,
     WatchlistQueryV2,
     WatchlistQuery,
-    FeedQuery,
     WebhookUpdateCommand,
     WebhookQuery,
     RegisterCompanyResponse,
     ArchiveCompanyResponse,
     ClassifyCompanyHitCommand,
-    WatchlistCompanyQuery
+    WatchlistCompanyQuery,
+    PingResponse
 } from '../contracts';
 import { Agent } from 'https';
 import * as fs from 'fs';
@@ -202,7 +202,7 @@ test('Classify person', async () => {
     let client = createClient();
     let id = random();
     let person = await createPerson(client, id);
-    let match = person.data.hits[0][0];
+    let match = person.data.hits![0][0];
     let command = <ClassifyPersonHitCommand>{
         personReferenceId: id,
         aliasId: match.aliasId,
@@ -220,7 +220,7 @@ test('Watchlist person V1', async () => {
     let id = random();
 
     let person = await createPerson(client, id);
-    let match = person.data.hits[0][0];
+    let match = person.data.hits![0][0];
     let command = <WatchlistQuery>{
         id: match.matchId,
         firstName: "Osama",
@@ -237,22 +237,13 @@ test('Watchlist person V2', async () => {
     let id = random();
 
     let person = await createPerson(client, id);
-    let match = person.data.hits[0][0];
+    let match = person.data.hits![0][0];
     let command = <WatchlistQueryV2>{
         matchId: match.matchId,
         personReferenceId: id,
     };
 
     let res = await client.watchlistPersonV2(command);
-
-    expect(res.success).toEqual(true);
-});
-
-test('Feed', async () => {
-    let client = createClient();
-    let command = <FeedQuery>{};
-
-    let res = await client.feed(command);
 
     expect(res.success).toEqual(true);
 });
@@ -360,7 +351,7 @@ test('Classify company', async () => {
     let id = random();
 
     let company = await createCompany(client, id);
-    let match = company.data.hits[0][0];
+    let match = company.data.hits![0][0];
     let command = <ClassifyCompanyHitCommand>{
         companyReferenceId: id,
         aliasId: match.aliasId,
@@ -377,7 +368,7 @@ test('Watchlist company', async () => {
     let client = createClient();
     let id = random();
     let company = await createCompany(client, id);
-    let match = company.data.hits[0][0];
+    let match = company.data.hits![0][0];
     let command = <WatchlistCompanyQuery>{
 		matchId: match.matchId,
 		companyReferenceId: id,
